@@ -5,8 +5,8 @@ import (
 
 	"github.com/pborman/uuid/uuid"
 
-	"github.com/pivotal-cf/brokerapi"
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/brokerapi"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 )
 
 type ProcessController interface {

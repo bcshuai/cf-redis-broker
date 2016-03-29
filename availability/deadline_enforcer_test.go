@@ -5,7 +5,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/cf-redis-broker/availability"
+	"github.com/bcshuai/cf-redis-broker/availability"
 )
 
 var _ = Describe("deadline enforcer", func() {

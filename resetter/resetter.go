@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pivotal-cf/cf-redis-broker/redisconf"
+	"github.com/bcshuai/cf-redis-broker/redisconf"
 )
 
 type checker interface {

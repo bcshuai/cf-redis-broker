@@ -4,8 +4,8 @@ import (
 	"github.com/pborman/uuid/uuid"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/cf-redis-broker/integration"
-	"github.com/pivotal-cf/cf-redis-broker/integration/helpers"
+	"github.com/bcshuai/cf-redis-broker/integration"
+	"github.com/bcshuai/cf-redis-broker/integration/helpers"
 )
 
 var _ = Describe("Provision dedicated instance", func() {

@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/pivotal-cf/cf-redis-broker/redis"
-	"github.com/pivotal-cf/cf-redis-broker/system"
+	"github.com/bcshuai/cf-redis-broker/redis"
+	"github.com/bcshuai/cf-redis-broker/system"
 	"github.com/pivotal-golang/lager/lagertest"
 
 	. "github.com/onsi/ginkgo"

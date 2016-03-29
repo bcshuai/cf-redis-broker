@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/pivotal-cf/cf-redis-broker/system"
+	"github.com/bcshuai/cf-redis-broker/system"
 )
 
 var _ = Describe("System command Runner", func() {

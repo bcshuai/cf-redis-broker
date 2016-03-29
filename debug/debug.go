@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/pivotal-cf/cf-redis-broker/redis"
+	"github.com/bcshuai/cf-redis-broker/redis"
 )
 
 func NewHandler(repo *redis.RemoteRepository) http.HandlerFunc {

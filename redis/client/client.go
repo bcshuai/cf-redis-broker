@@ -8,7 +8,7 @@ import (
 	"time"
 
 	redisclient "github.com/garyburd/redigo/redis"
-	"github.com/pivotal-cf/cf-redis-broker/redisconf"
+	"github.com/bcshuai/cf-redis-broker/redisconf"
 )
 
 type client struct {

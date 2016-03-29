@@ -7,7 +7,7 @@ import (
 
 	redisclient "github.com/garyburd/redigo/redis"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/cf-redis-broker/integration/helpers"
+	"github.com/bcshuai/cf-redis-broker/integration/helpers"
 )
 
 type RedisRunner struct {

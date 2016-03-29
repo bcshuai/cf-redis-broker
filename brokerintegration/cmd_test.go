@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
-	"github.com/pivotal-cf/cf-redis-broker/integration"
+	"github.com/bcshuai/cf-redis-broker/integration"
 )
 
 var _ = Describe("broker cmd", func() {

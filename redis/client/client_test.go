@@ -8,8 +8,8 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/cf-redis-broker/integration"
-	"github.com/pivotal-cf/cf-redis-broker/redis/client"
+	"github.com/bcshuai/cf-redis-broker/integration"
+	"github.com/bcshuai/cf-redis-broker/redis/client"
 
 	redisclient "github.com/garyburd/redigo/redis"
 )

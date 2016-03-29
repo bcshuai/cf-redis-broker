@@ -3,7 +3,7 @@ package task
 import (
 	"fmt"
 
-	"github.com/pivotal-cf/cf-redis-broker/s3"
+	"github.com/bcshuai/cf-redis-broker/s3"
 	"github.com/pivotal-golang/lager"
 )
 

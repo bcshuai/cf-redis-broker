@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
-	"github.com/pivotal-cf/cf-redis-broker/redis"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/redis"
 )
 
 type FakeLocalRepository struct {

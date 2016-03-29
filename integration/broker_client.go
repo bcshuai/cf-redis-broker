@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 )
 
 type BrokerClient struct {

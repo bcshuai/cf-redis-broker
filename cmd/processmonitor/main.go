@@ -7,11 +7,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/pivotal-cf/cf-redis-broker/availability"
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
-	"github.com/pivotal-cf/cf-redis-broker/process"
-	"github.com/pivotal-cf/cf-redis-broker/redis"
-	"github.com/pivotal-cf/cf-redis-broker/system"
+	"github.com/bcshuai/cf-redis-broker/availability"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/process"
+	"github.com/bcshuai/cf-redis-broker/redis"
+	"github.com/bcshuai/cf-redis-broker/system"
 	"github.com/pivotal-golang/lager"
 )
 

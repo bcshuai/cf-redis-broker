@@ -7,8 +7,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
-	"github.com/pivotal-cf/cf-redis-broker/integration/helpers"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/integration/helpers"
 )
 
 func LoadBrokerConfig(brokerFilename string) brokerconfig.Config {
@@ -21,7 +21,7 @@ func LoadBrokerConfig(brokerFilename string) brokerconfig.Config {
 }
 
 func BuildBroker() string {
-	return helpers.BuildExecutable("github.com/pivotal-cf/cf-redis-broker/cmd/broker")
+	return helpers.BuildExecutable("github.com/bcshuai/cf-redis-broker/cmd/broker")
 }
 
 func LaunchProcessWithBrokerConfig(executablePath string, brokerConfigName string) *gexec.Session {

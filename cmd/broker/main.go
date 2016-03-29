@@ -4,18 +4,18 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/pivotal-cf/brokerapi"
-	"github.com/pivotal-cf/brokerapi/auth"
+	"github.com/bcshuai/brokerapi"
+	"github.com/bcshuai/brokerapi/auth"
 	"github.com/pivotal-golang/lager"
 
-	"github.com/pivotal-cf/cf-redis-broker/availability"
-	"github.com/pivotal-cf/cf-redis-broker/broker"
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
-	"github.com/pivotal-cf/cf-redis-broker/debug"
-	"github.com/pivotal-cf/cf-redis-broker/process"
-	"github.com/pivotal-cf/cf-redis-broker/redis"
-	"github.com/pivotal-cf/cf-redis-broker/redisinstance"
-	"github.com/pivotal-cf/cf-redis-broker/system"
+	"github.com/bcshuai/cf-redis-broker/availability"
+	"github.com/bcshuai/cf-redis-broker/broker"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/debug"
+	"github.com/bcshuai/cf-redis-broker/process"
+	"github.com/bcshuai/cf-redis-broker/redis"
+	"github.com/bcshuai/cf-redis-broker/redisinstance"
+	"github.com/bcshuai/cf-redis-broker/system"
 )
 
 func main() {

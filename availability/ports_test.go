@@ -4,7 +4,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/pivotal-cf/cf-redis-broker/availability"
+	"github.com/bcshuai/cf-redis-broker/availability"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

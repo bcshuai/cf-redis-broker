@@ -9,8 +9,8 @@ import (
 
 	goamz "github.com/goamz/goamz/s3"
 	"github.com/onsi/gomega/gbytes"
-	"github.com/pivotal-cf/cf-redis-broker/recovery/task"
-	"github.com/pivotal-cf/cf-redis-broker/s3"
+	"github.com/bcshuai/cf-redis-broker/recovery/task"
+	"github.com/bcshuai/cf-redis-broker/s3"
 	"github.com/pivotal-golang/lager"
 )
 

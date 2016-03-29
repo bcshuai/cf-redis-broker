@@ -16,10 +16,10 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/cf-redis-broker/integration"
-	"github.com/pivotal-cf/cf-redis-broker/integration/helpers"
+	"github.com/bcshuai/cf-redis-broker/integration"
+	"github.com/bcshuai/cf-redis-broker/integration/helpers"
 
-	"github.com/pivotal-cf/cf-redis-broker/availability"
+	"github.com/bcshuai/cf-redis-broker/availability"
 )
 
 var _ = Describe("restarting processes", func() {
@@ -30,7 +30,7 @@ var _ = Describe("restarting processes", func() {
 		var password string
 		var client redisclient.Conn
 
-		processMonitorPath := helpers.BuildExecutable("github.com/pivotal-cf/cf-redis-broker/cmd/processmonitor")
+		processMonitorPath := helpers.BuildExecutable("github.com/bcshuai/cf-redis-broker/cmd/processmonitor")
 
 		configCommand := "CONFIG"
 

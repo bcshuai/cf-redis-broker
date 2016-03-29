@@ -4,7 +4,7 @@ package fakes
 import (
 	"sync"
 
-	"github.com/pivotal-cf/cf-redis-broker/instance/id"
+	"github.com/bcshuai/cf-redis-broker/instance/id"
 )
 
 type FakeInstanceIDLocator struct {

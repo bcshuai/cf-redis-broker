@@ -9,8 +9,8 @@ import (
 	"github.com/cloudfoundry-incubator/candiedyaml"
 	"github.com/onsi/gomega/gexec"
 
-	"github.com/pivotal-cf/cf-redis-broker/agentconfig"
-	"github.com/pivotal-cf/cf-redis-broker/integration/helpers"
+	"github.com/bcshuai/cf-redis-broker/agentconfig"
+	"github.com/bcshuai/cf-redis-broker/integration/helpers"
 
 	. "github.com/onsi/ginkgo"
 	"github.com/onsi/ginkgo/reporters"
@@ -56,7 +56,7 @@ func startAgent() *gexec.Session {
 	Ω(err).ShouldNot(HaveOccurred())
 	configFile.Close()
 
-	agentPath, err := gexec.Build("github.com/pivotal-cf/cf-redis-broker/cmd/agent")
+	agentPath, err := gexec.Build("github.com/bcshuai/cf-redis-broker/cmd/agent")
 	Ω(err).ShouldNot(HaveOccurred())
 
 	session, err := gexec.Start(

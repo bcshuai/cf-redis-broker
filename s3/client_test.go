@@ -5,7 +5,7 @@ import (
 
 	"github.com/mitchellh/goamz/aws"
 	goamz "github.com/mitchellh/goamz/s3"
-	"github.com/pivotal-cf/cf-redis-broker/s3"
+	"github.com/bcshuai/cf-redis-broker/s3"
 	"github.com/pivotal-golang/lager"
 
 	. "github.com/onsi/ginkgo"

@@ -7,9 +7,9 @@ import (
 	"os"
 	"sync"
 
-	"github.com/pivotal-cf/brokerapi"
-	"github.com/pivotal-cf/cf-redis-broker/broker"
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/brokerapi"
+	"github.com/bcshuai/cf-redis-broker/broker"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 )
 
 type RemoteRepository struct {

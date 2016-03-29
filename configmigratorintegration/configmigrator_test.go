@@ -11,8 +11,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
-	"github.com/pivotal-cf/cf-redis-broker/integration/helpers"
-	"github.com/pivotal-cf/cf-redis-broker/redisconf"
+	"github.com/bcshuai/cf-redis-broker/integration/helpers"
+	"github.com/bcshuai/cf-redis-broker/redisconf"
 )
 
 var _ = Describe("ConfigMigrator Intgration", func() {
@@ -28,7 +28,7 @@ var _ = Describe("ConfigMigrator Intgration", func() {
 			copyOverFromAssets("redis-server.password", redisInstanceDir)
 			copyOverFromAssets("redis.conf", redisInstanceDir)
 
-			executablePath := buildExecutable("github.com/pivotal-cf/cf-redis-broker/cmd/configmigrator")
+			executablePath := buildExecutable("github.com/bcshuai/cf-redis-broker/cmd/configmigrator")
 			session := launchProcessWithBrokerConfig(executablePath, "broker.yml")
 			session.Wait(10 * time.Second)
 

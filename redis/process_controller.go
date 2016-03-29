@@ -9,8 +9,8 @@ import (
 
 	"github.com/pivotal-golang/lager"
 
-	"github.com/pivotal-cf/cf-redis-broker/availability"
-	"github.com/pivotal-cf/cf-redis-broker/system"
+	"github.com/bcshuai/cf-redis-broker/availability"
+	"github.com/bcshuai/cf-redis-broker/system"
 )
 
 const redisStartTimeout time.Duration = 10 * time.Second

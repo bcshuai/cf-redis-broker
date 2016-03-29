@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"path/filepath"
 
-	"github.com/pivotal-cf/cf-redis-broker/agentapi"
+	"github.com/bcshuai/cf-redis-broker/agentapi"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

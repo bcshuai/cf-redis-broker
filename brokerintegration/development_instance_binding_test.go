@@ -7,7 +7,7 @@ import (
 	redigo "github.com/garyburd/redigo/redis"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/cf-redis-broker/integration/helpers"
+	"github.com/bcshuai/cf-redis-broker/integration/helpers"
 )
 
 var _ = Describe("Shared instance binding", func() {

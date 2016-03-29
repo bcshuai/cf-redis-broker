@@ -9,10 +9,10 @@ import (
 
 	"encoding/json"
 
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
-	"github.com/pivotal-cf/cf-redis-broker/debug"
-	"github.com/pivotal-cf/cf-redis-broker/integration"
-	"github.com/pivotal-cf/cf-redis-broker/integration/helpers"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/debug"
+	"github.com/bcshuai/cf-redis-broker/integration"
+	"github.com/bcshuai/cf-redis-broker/integration/helpers"
 
 	. "github.com/onsi/ginkgo"
 	"github.com/onsi/ginkgo/reporters"

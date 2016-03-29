@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/pivotal-cf/cf-redis-broker/redisconf"
+	"github.com/bcshuai/cf-redis-broker/redisconf"
 )
 
 type redisResetter interface {

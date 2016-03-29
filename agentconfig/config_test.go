@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/pivotal-cf/cf-redis-broker/agentconfig"
+	"github.com/bcshuai/cf-redis-broker/agentconfig"
 )
 
 var _ = Describe("Config", func() {

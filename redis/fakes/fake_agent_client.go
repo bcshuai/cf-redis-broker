@@ -1,6 +1,6 @@
 package fakes
 
-import "github.com/pivotal-cf/cf-redis-broker/redis"
+import "github.com/bcshuai/cf-redis-broker/redis"
 
 type FakeAgentClient struct {
 	ResetURLs       []string

@@ -8,12 +8,12 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/pivotal-cf/brokerapi/auth"
-	"github.com/pivotal-cf/cf-redis-broker/agentapi"
-	"github.com/pivotal-cf/cf-redis-broker/agentconfig"
-	"github.com/pivotal-cf/cf-redis-broker/availability"
-	"github.com/pivotal-cf/cf-redis-broker/redisconf"
-	"github.com/pivotal-cf/cf-redis-broker/resetter"
+	"github.com/bcshuai/brokerapi/auth"
+	"github.com/bcshuai/cf-redis-broker/agentapi"
+	"github.com/bcshuai/cf-redis-broker/agentconfig"
+	"github.com/bcshuai/cf-redis-broker/availability"
+	"github.com/bcshuai/cf-redis-broker/redisconf"
+	"github.com/bcshuai/cf-redis-broker/resetter"
 	"github.com/pivotal-golang/lager"
 )
 

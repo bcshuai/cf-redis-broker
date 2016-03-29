@@ -3,9 +3,9 @@ platform: linux
 image: docker:///cflondonservices/london-services-ci-redis#stable
 inputs:
   - name: cf-redis-broker
-    path: src/github.com/pivotal-cf/cf-redis-broker
+    path: src/github.com/bcshuai/cf-redis-broker
 params:
   AWS_ACCESS_KEY_ID:
   AWS_SECRET_ACCESS_KEY:
 run:
-  path: src/github.com/pivotal-cf/cf-redis-broker/ci/test-redis-broker.sh
+  path: src/github.com/bcshuai/cf-redis-broker/ci/test-redis-broker.sh

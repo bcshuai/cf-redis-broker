@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pivotal-cf/cf-redis-broker/broker"
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
-	"github.com/pivotal-cf/cf-redis-broker/redisconf"
+	"github.com/bcshuai/cf-redis-broker/broker"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/redisconf"
 )
 
 type LocalRepository struct {

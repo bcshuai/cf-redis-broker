@@ -8,8 +8,8 @@ import (
 
 	"github.com/pborman/uuid/uuid"
 
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
-	"github.com/pivotal-cf/cf-redis-broker/redis"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/redis"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	"github.com/onsi/ginkgo/reporters"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/cf-redis-broker/redis"
+	"github.com/bcshuai/cf-redis-broker/redis"
 
 	"testing"
 )

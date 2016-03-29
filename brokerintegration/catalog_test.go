@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/pivotal-cf/brokerapi"
-	"github.com/pivotal-cf/cf-redis-broker/integration"
-	"github.com/pivotal-cf/cf-redis-broker/integration/helpers"
+	"github.com/bcshuai/brokerapi"
+	"github.com/bcshuai/cf-redis-broker/integration"
+	"github.com/bcshuai/cf-redis-broker/integration/helpers"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

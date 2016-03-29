@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
-	"github.com/pivotal-cf/cf-redis-broker/configmigrator"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/configmigrator"
 	"github.com/pivotal-golang/lager"
 )
 

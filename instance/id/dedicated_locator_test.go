@@ -12,9 +12,9 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
-	"github.com/pivotal-cf/brokerapi/auth"
-	"github.com/pivotal-cf/cf-redis-broker/instance/id"
-	"github.com/pivotal-cf/cf-redis-broker/redisinstance"
+	"github.com/bcshuai/brokerapi/auth"
+	"github.com/bcshuai/cf-redis-broker/instance/id"
+	"github.com/bcshuai/cf-redis-broker/redisinstance"
 	"github.com/pivotal-golang/lager"
 	. "github.com/st3v/glager"
 )

@@ -6,8 +6,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
-	"github.com/pivotal-cf/cf-redis-broker/integration/helpers"
-	"github.com/pivotal-cf/cf-redis-broker/redisconf"
+	"github.com/bcshuai/cf-redis-broker/integration/helpers"
+	"github.com/bcshuai/cf-redis-broker/redisconf"
 )
 
 var _ = Describe("Startup", func() {

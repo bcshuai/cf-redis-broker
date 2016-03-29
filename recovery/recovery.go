@@ -1,6 +1,6 @@
 package recovery
 
-import "github.com/pivotal-cf/cf-redis-broker/recovery/task"
+import "github.com/bcshuai/cf-redis-broker/recovery/task"
 
 type Snapshotter interface {
 	Snapshot() (task.Artifact, error)

@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 )
 
 type Credentials struct {

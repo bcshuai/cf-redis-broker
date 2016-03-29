@@ -11,7 +11,7 @@ import (
 
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 )
 
 func BuildExecutable(sourcePath string) string {

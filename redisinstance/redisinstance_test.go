@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/pivotal-cf/cf-redis-broker/redisinstance"
+	"github.com/bcshuai/cf-redis-broker/redisinstance"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

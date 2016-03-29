@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/pivotal-cf/cf-redis-broker/system"
+	"github.com/bcshuai/cf-redis-broker/system"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

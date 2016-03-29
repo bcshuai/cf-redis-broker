@@ -9,10 +9,10 @@ import (
 	. "github.com/onsi/ginkgo"
 	"github.com/onsi/ginkgo/reporters"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
-	"github.com/pivotal-cf/cf-redis-broker/debug"
-	"github.com/pivotal-cf/cf-redis-broker/integration/helpers"
-	"github.com/pivotal-cf/cf-redis-broker/redis"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/debug"
+	"github.com/bcshuai/cf-redis-broker/integration/helpers"
+	"github.com/bcshuai/cf-redis-broker/redis"
 
 	"testing"
 )

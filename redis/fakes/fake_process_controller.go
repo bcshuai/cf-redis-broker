@@ -3,7 +3,7 @@ package fakes
 import (
 	"time"
 
-	"github.com/pivotal-cf/cf-redis-broker/redis"
+	"github.com/bcshuai/cf-redis-broker/redis"
 )
 
 type FakeProcessController struct {

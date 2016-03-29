@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/pivotal-cf/cf-redis-broker/redisinstance"
+	"github.com/bcshuai/cf-redis-broker/redisinstance"
 	"github.com/pivotal-golang/lager"
 )
 

@@ -6,7 +6,7 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/cf-redis-broker/redisconf"
+	"github.com/bcshuai/cf-redis-broker/redisconf"
 )
 
 func BuildRedisClient(port uint, host string, password string) redis.Conn {

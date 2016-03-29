@@ -7,7 +7,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/cf-redis-broker/log"
+	"github.com/bcshuai/cf-redis-broker/log"
 	"github.com/pivotal-golang/lager"
 )
 

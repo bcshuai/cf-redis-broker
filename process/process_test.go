@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/pivotal-cf/cf-redis-broker/process"
+	"github.com/bcshuai/cf-redis-broker/process"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

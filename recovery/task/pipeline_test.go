@@ -8,7 +8,7 @@ import (
 	. "github.com/st3v/glager"
 
 	"github.com/onsi/gomega/gbytes"
-	"github.com/pivotal-cf/cf-redis-broker/recovery/task"
+	"github.com/bcshuai/cf-redis-broker/recovery/task"
 	"github.com/pivotal-golang/lager"
 )
 

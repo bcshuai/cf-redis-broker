@@ -5,10 +5,10 @@ import (
 
 	"github.com/pborman/uuid/uuid"
 
-	"github.com/pivotal-cf/brokerapi"
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
-	"github.com/pivotal-cf/cf-redis-broker/redis"
-	"github.com/pivotal-cf/cf-redis-broker/redis/fakes"
+	"github.com/bcshuai/brokerapi"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/redis"
+	"github.com/bcshuai/cf-redis-broker/redis/fakes"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

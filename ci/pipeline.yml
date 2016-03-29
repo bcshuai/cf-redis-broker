@@ -3,7 +3,7 @@ resources:
   - name: cf-redis-broker
     type: git
     source:
-      uri: https://github.com/pivotal-cf/cf-redis-broker
+      uri: https://github.com/bcshuai/cf-redis-broker
       branch: master
 
 jobs:

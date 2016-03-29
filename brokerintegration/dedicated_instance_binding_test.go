@@ -6,7 +6,7 @@ import (
 	"github.com/pborman/uuid/uuid"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/cf-redis-broker/debug"
+	"github.com/bcshuai/cf-redis-broker/debug"
 )
 
 var _ = Describe("Dedicated instance binding", func() {

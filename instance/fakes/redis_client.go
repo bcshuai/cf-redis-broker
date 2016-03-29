@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pivotal-cf/cf-redis-broker/redis/client"
+	"github.com/bcshuai/cf-redis-broker/redis/client"
 )
 
 type FakeRedisClient struct {
