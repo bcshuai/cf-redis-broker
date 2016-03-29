@@ -7,7 +7,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/pivotal-cf/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 )
 
 var _ = Describe("parsing the broker config file", func() {
@@ -108,6 +108,10 @@ var _ = Describe("parsing the broker config file", func() {
 				Ω(config.RedisConfiguration.ServiceInstanceLimit).To(Equal(3))
 			})
 
+			It("load the ServiceKeysSupported field", func(){
+				Ω(config.RedisConfiguration.ServiceKeysSupported).Should(Equal(true))
+			})
+
 			It("loads the auth credendials", func() {
 				Ω(config.AuthConfiguration.Username).To(Equal("admin"))
 				Ω(config.AuthConfiguration.Password).To(Equal("secret"))
@@ -124,6 +128,7 @@ var _ = Describe("parsing the broker config file", func() {
 			It("loads the agent port", func() {
 				Ω(config.AgentPort).Should(Equal("1234"))
 			})
+			
 		})
 
 		Context("when the configuration is invalid", func() {

@@ -11,6 +11,7 @@ redis:
   process_check_interval: 5
   start_redis_timeout: 3
   service_instance_limit: 3
+  serviceKeysSupported: true
   dedicated:
     nodes:
       - 10.0.0.1

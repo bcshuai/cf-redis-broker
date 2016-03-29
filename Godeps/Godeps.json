@@ -1,80 +1,9 @@
 {
-	"ImportPath": "github.com/pivotal-cf/cf-redis-broker",
-	"GoVersion": "go1.4.3",
+	"ImportPath": "github.com/bcshuai/cf-redis-broker",
+	"GoVersion": "go1.5",
+	"GodepVersion": "v60",
 	"Packages": [
-		"./..."
+		"."
 	],
-	"Deps": [
-		{
-			"ImportPath": "github.com/cloudfoundry-incubator/candiedyaml",
-			"Rev": "150e4e8f749b21a7f0de8e3cfd885143fcea6b32"
-		},
-		{
-			"ImportPath": "github.com/cloudfoundry/gosigar",
-			"Comment": "scotty_09012012-27-g3ed7c74",
-			"Rev": "3ed7c74352dae6dc00bdc8c74045375352e3ec05"
-		},
-		{
-			"ImportPath": "github.com/garyburd/redigo/internal",
-			"Rev": "535138d7bcd717d6531c701ef5933d98b1866257"
-		},
-		{
-			"ImportPath": "github.com/garyburd/redigo/redis",
-			"Rev": "535138d7bcd717d6531c701ef5933d98b1866257"
-		},
-		{
-			"ImportPath": "github.com/goamz/goamz/aws",
-			"Rev": "760aa2f8a491b6019dcf2df81d913927cb25fbc6"
-		},
-		{
-			"ImportPath": "github.com/goamz/goamz/s3",
-			"Rev": "760aa2f8a491b6019dcf2df81d913927cb25fbc6"
-		},
-		{
-			"ImportPath": "github.com/gorilla/context",
-			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
-		},
-		{
-			"ImportPath": "github.com/gorilla/mux",
-			"Rev": "e444e69cbd2e2e3e0749a2f3c717cec491552bbf"
-		},
-		{
-			"ImportPath": "github.com/mitchellh/goamz/aws",
-			"Rev": "84d8b2b74375eda9f189283e5f0710e6bcc3fb47"
-		},
-		{
-			"ImportPath": "github.com/mitchellh/goamz/s3",
-			"Rev": "84d8b2b74375eda9f189283e5f0710e6bcc3fb47"
-		},
-		{
-			"ImportPath": "github.com/onsi/ginkgo",
-			"Comment": "v1.1.0-28-g7d3d52b",
-			"Rev": "7d3d52b3a3a79d745c2a03ee81b5bc2086642201"
-		},
-		{
-			"ImportPath": "github.com/onsi/gomega",
-			"Comment": "v1.0-48-g766f404",
-			"Rev": "766f4042b942146e90594d145c5071fa92c0aa9a"
-		},
-		{
-			"ImportPath": "github.com/pborman/uuid/uuid",
-			"Rev": "0b37a597426901e8bec92cd0094bcce2b0a6471c"
-		},
-		{
-			"ImportPath": "github.com/pivotal-cf/brokerapi",
-			"Rev": "15b0ee33a737ef05859cfaa916b04a3dff10d66e"
-		},
-		{
-			"ImportPath": "github.com/pivotal-golang/lager",
-			"Rev": "81d18ed6a75f16276fed99134f0e8397ec2e91e2"
-		},
-		{
-			"ImportPath": "github.com/st3v/glager",
-			"Rev": "5186fccb216089784927f8f9fe1d774d118dfc10"
-		},
-		{
-			"ImportPath": "github.com/vaughan0/go-ini",
-			"Rev": "a98ad7ee00ec53921f08832bc06ecf7fd600e6a1"
-		}
-	]
+	"Deps": []
 }

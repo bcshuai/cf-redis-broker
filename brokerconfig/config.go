@@ -36,6 +36,7 @@ type ServiceConfiguration struct {
 	InstanceLogDirectory        string    `yaml:"log_directory"`
 	ServiceInstanceLimit        int       `yaml:"service_instance_limit"`
 	Dedicated                   Dedicated `yaml:"dedicated"`
+	ServiceKeysSupported		bool	  `ymal:"serviceKeysSupported"`
 }
 
 type Dedicated struct {
