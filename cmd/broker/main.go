@@ -66,16 +66,18 @@ func main() {
 		brokerLogger.Fatal("Error initializing remote repository", err)
 	}
 
-	serviceBroker := &broker.RedisServiceBroker{
-		InstanceCreators: map[string]broker.InstanceCreator{
-			"shared":    localCreator,
-			"dedicated": remoteRepo,
+	serviceBroker := &broker.BluemixRedisServiceBroker{
+		broker.RedisServiceBroker{
+			InstanceCreators: map[string]broker.InstanceCreator{
+				"shared":    localCreator,
+				"dedicated": remoteRepo,
+			},
+			InstanceBinders: map[string]broker.InstanceBinder{
+				"shared":    localRepo,
+				"dedicated": remoteRepo,
+			},
+			Config: config,
 		},
-		InstanceBinders: map[string]broker.InstanceBinder{
-			"shared":    localRepo,
-			"dedicated": remoteRepo,
-		},
-		Config: config,
 	}
 
 	brokerCredentials := brokerapi.BrokerCredentials{

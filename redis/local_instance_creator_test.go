@@ -3,7 +3,7 @@ package redis_test
 import (
 	"errors"
 
-	"github.com/pborman/uuid/uuid"
+	"github.com/pborman/uuid"
 
 	"github.com/bcshuai/brokerapi"
 	"github.com/bcshuai/cf-redis-broker/brokerconfig"

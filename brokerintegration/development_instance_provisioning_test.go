@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/pborman/uuid/uuid"
+	"github.com/pborman/uuid"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

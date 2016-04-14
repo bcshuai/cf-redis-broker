@@ -82,20 +82,22 @@ var _ = Describe("Redis service broker", func() {
 			},
 		}
 
-		redisBroker = &broker.RedisServiceBroker{
-			InstanceCreators: map[string]broker.InstanceCreator{
-				planName: someCreatorAndBinder,
-			},
-			InstanceBinders: map[string]broker.InstanceBinder{
-				planName: someCreatorAndBinder,
-			},
-			Config: brokerconfig.Config{
-				RedisConfiguration: brokerconfig.ServiceConfiguration{
-					SharedVMPlanID:       sharedPlanID,
-					DedicatedVMPlanID:    dedicatedPlanID,
-					ServiceInstanceLimit: 3,
-					Dedicated: brokerconfig.Dedicated{
-						Nodes: []string{"10.0.0.1", "10.0.0.2", "10.0.0.3"},
+		redisBroker = &broker.BluemixRedisServiceBroker{
+			RedisServiceBroker{
+				InstanceCreators: map[string]broker.InstanceCreator{
+					planName: someCreatorAndBinder,
+				},
+				InstanceBinders: map[string]broker.InstanceBinder{
+					planName: someCreatorAndBinder,
+				},
+				Config: brokerconfig.Config{
+					RedisConfiguration: brokerconfig.ServiceConfiguration{
+						SharedVMPlanID:       sharedPlanID,
+						DedicatedVMPlanID:    dedicatedPlanID,
+						ServiceInstanceLimit: 3,
+						Dedicated: brokerconfig.Dedicated{
+							Nodes: []string{"10.0.0.1", "10.0.0.2", "10.0.0.3"},
+						},
 					},
 				},
 			},

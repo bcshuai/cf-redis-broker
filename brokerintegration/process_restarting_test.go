@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/pborman/uuid/uuid"
+	"github.com/pborman/uuid"
 	redisclient "github.com/garyburd/redigo/redis"
 
 	. "github.com/onsi/ginkgo"
