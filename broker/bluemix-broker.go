@@ -2,7 +2,6 @@ package broker
 
 import (
 	"errors"
-	"strings"
 	"github.com/bcshuai/brokerapi"
 	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 )
@@ -56,23 +55,28 @@ func (broker *BluemixRedisServiceBroker) Provision(instanceID string, details br
 		return spec, errors.New("plan_id required")
 	}
 
-	var matchedServiceConfig brokerconfig.BluemixServiceConfig
+	var matchedServiceConfig *brokerconfig.BluemixServiceConfig = nil
 
 	for _, serviceConfig := range broker.Config.RedisConfiguration.Services {
-		if(strings.EqualFold(serviceConfig.ServiceID, details.ServiceID)) {
-			matchedServiceConfig = serviceConfig
+		if(serviceConfig.ServiceID == details.ServiceID) {
+			matchedServiceConfig = &serviceConfig
 			break
 		}
+	}
+
+	if(matchedServiceConfig == nil){
 		return spec, errors.New("no such service")
 	}
 
-	var matchedServicePlanConfig brokerconfig.BluemixServicePlanConfig
+	var matchedServicePlanConfig *brokerconfig.BluemixServicePlanConfig = nil
 	for _, planConfig := range matchedServiceConfig.Plans {
-		if strings.EqualFold(planConfig.ID, details.PlanID) {
-			matchedServicePlanConfig = planConfig
+		if (planConfig.ID == details.PlanID) {
+			matchedServicePlanConfig = &planConfig
 			break
 		}
-		return spec, errors.New("no such plan: " + details.PlanID + " vs " + planConfig.ID)
+	}
+	if(matchedServicePlanConfig == nil){
+		return spec, errors.New("no such service plan")
 	}
 
 	instanceCreatorKey := ""
