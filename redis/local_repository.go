@@ -162,6 +162,8 @@ func (repo *LocalRepository) WriteConfigFile(instance *Instance) error {
 		instance.ID,
 		strconv.Itoa(instance.Port),
 		instance.Password,
+		instance.MaxClientConnections,
+		instance.MaxMemoryInMB,
 	)
 }
 

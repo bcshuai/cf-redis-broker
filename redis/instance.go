@@ -7,6 +7,8 @@ type Instance struct {
 	Host     string
 	Port     int
 	Password string
+	MaxMemoryInMB int
+	MaxClientConnections int
 }
 
 func (instance Instance) Address() *net.TCPAddr {

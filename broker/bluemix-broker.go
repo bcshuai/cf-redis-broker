@@ -1,6 +1,7 @@
 package broker
 
 import (
+	"errors"
 	"github.com/bcshuai/brokerapi"
 	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 )
@@ -14,7 +15,7 @@ type BluemixServiceMetadata struct {
 type BluemixServicePlan struct {
 	brokerapi.ServicePlan
 	MaxMemoryInMB 			int 		`json:"max_memory_mb"`
-	MaxClientConnections	int 		`json:"max_user_connection"`
+	MaxClientConnections	int 		`json:"max_client_connection"`
 }
 
 type BluemixRedisServiceBroker struct {
@@ -38,6 +39,60 @@ func (broker *BluemixRedisServiceBroker) Services() []brokerapi.IMetadataProvide
 	}
 	return services
 }
+
+func (broker *BluemixRedisServiceBroker) Provision(instanceID string, details brokerapi.ProvisionDetails, asyncAllowed bool) (brokerapi.ProvisionedServiceSpec, error){
+	
+	spec := brokerapi.ProvisionedServiceSpec{
+		false,
+		"",
+	}
+
+	if broker.instanceExists(instanceID) {
+		return spec, brokerapi.ErrInstanceAlreadyExists
+	}
+
+	if details.PlanID == "" {
+		return spec, errors.New("plan_id required")
+	}
+
+	var matchedServiceConfig brokerconfig.BluemixServiceConfig
+
+	for _, serviceConfig := range broker.Config.RedisConfiguration.Services {
+		if(serviceConfig.ServiceID == details.ServiceID) {
+			matchedServiceConfig = serviceConfig
+			break
+		}
+		return spec, errors.New("no such service")
+	}
+
+	var matchedServicePlanConfig brokerconfig.BluemixServicePlanConfig
+	for _, planConfig := range matchedServiceConfig.Plans {
+		if planConfig.ID == details.PlanID {
+			matchedServicePlanConfig = planConfig
+			break
+		}
+		return spec, errors.New("no such plan: " + details.PlanID)
+	}
+
+	instanceCreatorKey := ""
+	if(matchedServiceConfig.ServiceName == "redis-shared-vm"){
+		instanceCreatorKey = "shared"
+	} else if (matchedServiceConfig.ServiceName == "dedicated") {
+		instanceCreatorKey = "dedicated"
+	}
+
+	if instanceCreatorKey == "" {
+		return spec, errors.New("Service ID not recognized")
+	}
+
+	instanceCreator, ok := broker.InstanceCreators[instanceCreatorKey]
+	if !ok {
+		return spec, errors.New("instance creator not found for plan")
+	}
+
+	return spec, instanceCreator.CreateWithRestriction(instanceID,matchedServicePlanConfig.MaxMemoryInMB,matchedServicePlanConfig.MaxClientConnections)
+}
+
 func getServiceMetaFromConfig(serviceMetadataConfig brokerconfig.BluemixServiceMetadataConfig) BluemixServiceMetadata {
 	return BluemixServiceMetadata {
 		ServiceMetadata: brokerapi.ServiceMetadata {

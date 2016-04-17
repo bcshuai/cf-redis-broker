@@ -20,6 +20,7 @@ type InstanceCredentials struct {
 
 type InstanceCreator interface {
 	Create(instanceID string) error
+	CreateWithRestriction(instanceID string, max_mem_in_mb int, max_client_connection int) error
 	Destroy(instanceID string) error
 	InstanceExists(instanceID string) (bool, error)
 }
@@ -37,15 +38,15 @@ type RedisServiceBroker struct {
 }
 
 func (redisServiceBroker *RedisServiceBroker) Services() []brokerapi.IMetadataProvider {
-	planList := []brokerapi.ServicePlan{}
+	planList := []brokerapi.IMetadataProvider{}
 	for _, plan := range redisServiceBroker.plans() {
 		planList = append(planList, *plan)
 	}
 
 	return []brokerapi.IMetadataProvider{
 		brokerapi.Service{
-			ID:          redisServiceBroker.Config.RedisConfiguration.ServiceID,
-			Name:        redisServiceBroker.Config.RedisConfiguration.ServiceName,
+			ID:          "", //redisServiceBroker.Config.RedisConfiguration.ServiceID,
+			Name:        "", //redisServiceBroker.Config.RedisConfiguration.ServiceName,
 			Description: "Redis service to provide a key-value store",
 			Bindable:    true,
 			Plans:       planList,
@@ -175,7 +176,7 @@ func (redisServiceBroker *RedisServiceBroker) plans() map[string]*brokerapi.Serv
 
 	if redisServiceBroker.Config.SharedEnabled() {
 		plans["shared"] = &brokerapi.ServicePlan{
-			ID:          redisServiceBroker.Config.RedisConfiguration.SharedVMPlanID,
+			ID:          "", //redisServiceBroker.Config.RedisConfiguration.SharedVMPlanID,
 			Name:        PlanNameShared,
 			Description: "This plan provides a single Redis process on a shared VM, which is suitable for development and testing workloads",
 			Metadata: brokerapi.ServicePlanMetadata{
@@ -191,7 +192,7 @@ func (redisServiceBroker *RedisServiceBroker) plans() map[string]*brokerapi.Serv
 
 	if redisServiceBroker.Config.DedicatedEnabled() {
 		plans["dedicated"] = &brokerapi.ServicePlan{
-			ID:          redisServiceBroker.Config.RedisConfiguration.DedicatedVMPlanID,
+			ID:          "", //redisServiceBroker.Config.RedisConfiguration.DedicatedVMPlanID,
 			Name:        PlanNameDedicated,
 			Description: "This plan provides a single Redis process on a dedicated VM, which is suitable for production workloads",
 			Metadata: brokerapi.ServicePlanMetadata{

@@ -180,7 +180,7 @@ func parseParam(line string) (Param, error) {
 	}, nil
 }
 
-func CopyWithInstanceAdditions(fromPath, toPath, syslogIdentSuffix, port, password string) error {
+func CopyWithInstanceAdditions(fromPath, toPath, syslogIdentSuffix, port, password string, max_memory_in_mb, max_client_connection int) error {
 	defaultConfig, err := Load(fromPath)
 	if err != nil {
 		return err
@@ -192,6 +192,10 @@ func CopyWithInstanceAdditions(fromPath, toPath, syslogIdentSuffix, port, passwo
 
 	defaultConfig.Set("port", port)
 	defaultConfig.Set("requirepass", password)
+	defaultConfig.Set("maxclients", strconv.Itoa(max_client_connection))
+	defaultConfig.Set("maxmemory", "" + strconv.Itoa(max_memory_in_mb))
+	defaultConfig.Set("maxmemory-policy", "volatile-lru")
+	defaultConfig.Set("maxmemory-samples", "3")
 
 	err = defaultConfig.Save(toPath)
 	if err != nil {

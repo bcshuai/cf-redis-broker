@@ -142,6 +142,9 @@ func (repo *RemoteRepository) Create(instanceID string) error {
 
 	return nil
 }
+func (repo *RemoteRepository) CreateWithRestriction(instanceID string, max_memory_in_mb, max_client_connection int) error {
+	return repo.Create(instanceID)
+}
 
 func (repo *RemoteRepository) Bind(instanceID string, bindingID string) (broker.InstanceCredentials, error) {
 	repo.Lock()

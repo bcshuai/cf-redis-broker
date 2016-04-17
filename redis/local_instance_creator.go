@@ -44,7 +44,7 @@ func (localInstanceCreator *LocalInstanceCreator) Create(instanceID string) erro
 	if instanceCount >= localInstanceCreator.RedisConfiguration.ServiceInstanceLimit {
 		return brokerapi.ErrInstanceLimitMet
 	}
-
+    
 	port, _ := localInstanceCreator.FindFreePort()
 	instance := &Instance{
 		ID:       instanceID,
@@ -52,8 +52,33 @@ func (localInstanceCreator *LocalInstanceCreator) Create(instanceID string) erro
 		Host:     localInstanceCreator.RedisConfiguration.Host,
 		Password: uuid.NewRandom().String(),
 	}
+	return localInstanceCreator.provisonInstance(instance)
+}
+func (localInstanceCreator *LocalInstanceCreator) CreateWithRestriction(instanceID string, max_memory_in_mb, max_client_connection int) error {
+	instanceCount, err := localInstanceCreator.InstanceCount()
+	if err != nil {
+		return err
+	}
 
-	err = localInstanceCreator.Setup(instance)
+	if instanceCount >= localInstanceCreator.RedisConfiguration.ServiceInstanceLimit {
+		return brokerapi.ErrInstanceLimitMet
+	}
+    
+	port, _ := localInstanceCreator.FindFreePort()
+	instance := &Instance{
+		ID:       instanceID,
+		Port:     port,
+		Host:     localInstanceCreator.RedisConfiguration.Host,
+		Password: uuid.NewRandom().String(),
+		MaxClientConnections: max_client_connection,
+		MaxMemoryInMB: max_memory_in_mb,
+	}
+	return localInstanceCreator.provisonInstance(instance)
+}
+
+func (localInstanceCreator *LocalInstanceCreator) provisonInstance(instance *Instance) error {
+
+	err := localInstanceCreator.Setup(instance)
 	if err != nil {
 		return err
 	}
