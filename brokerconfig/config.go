@@ -24,8 +24,6 @@ type AuthConfiguration struct {
 }
 
 type ServiceConfiguration struct {
-	ServiceName                 string    `yaml:"service_name"`
-	ServiceID                   string    `yaml:"service_id"`
 	DedicatedVMPlanID           string    `yaml:"dedicated_vm_plan_id"`
 	SharedVMPlanID              string    `yaml:"shared_vm_plan_id"`
 	Host                        string    `yaml:"host"`
@@ -36,13 +34,55 @@ type ServiceConfiguration struct {
 	InstanceLogDirectory        string    `yaml:"log_directory"`
 	ServiceInstanceLimit        int       `yaml:"service_instance_limit"`
 	Dedicated                   Dedicated `yaml:"dedicated"`
-	ServiceKeysSupported		bool	  `ymal:"serviceKeysSupported"`
+	Services 					BluemixServiceConfig `yaml:"services"`
 }
 
 type Dedicated struct {
 	Nodes         []string `yaml:"nodes"`
 	Port          int      `yaml:"port"`
 	StatefilePath string   `yaml:"statefile_path"`
+}
+
+type BluemixServiceConfig struct {
+	ServiceID 					string 									`yaml:"service_id"`
+	ServiceName     			string 									`yaml:"service_name"`
+	PlanUpdateable 				bool 									`yaml:"plan_updateable"`
+	Description 				string 									`yaml:"description"`
+	Metadata 					BluemixServiceMetadataConfig 			`yaml:"metadata"`
+	Plans 						[]BluemixServicePlanConfig 				`yaml:"plans"`
+	Tags 						[]string 								`yaml:"tags,omitempty"`
+	DashboardClient   			BluemixServiceDashboardClientConfig 	`yaml:"dashboard_client,omitempty"`
+}
+type BluemixServiceMetadataConfig struct {
+	DisplayName         string `yaml:"displayName,omitempty"`
+	ImageUrl            string `yaml:"imageUrl,omitempty"`
+	LongDescription     string `yaml:"longDescription,omitempty"`
+	ProviderDisplayName string `yaml:"providerDisplayName,omitempty"`
+	DocumentationUrl    string `yaml:"documentationUrl,omitempty"`
+	SupportUrl          string `yaml:"supportUrl,omitempty"`
+	ServiceKeysSupport  string `yaml:"serviceKeysSupported"`
+	Type 				string `yaml:"type"`
+}
+type BluemixServicePlanConfig struct {
+	ID          string               `yaml:"id"`
+	Name        string               `yaml:"name"`
+	Description string               `yaml:"description"`
+	MaxMemoryInMB 			int 		`yaml:"max_memory_mb"`
+	MaxClientConnections	int 		`yaml:"max_user_connection"`
+	Metadata    BluemixServicePlanMetadataConfig `yaml:"metadata,omitempty"`    //ServicePlanMetadata
+}
+type BluemixServicePlanMetadataConfig struct {
+	DisplayName string        `yaml:"displayName,omitempty"`
+	Bullets     []string      `yaml:"bullets,omitempty"`
+	Costs       []BluemixServiceCostConfig `yaml:"costs,omitempty"`
+}
+type BluemixServiceCostConfig struct {
+	Amount map[string]float64 `yaml:"amount"`
+	Unit   string             `yaml:"unit"`
+}
+type BluemixServiceDashboardClientConfig struct {
+	ID          string `yaml:"id"`
+	Secret      string `yaml:"secret"`
 }
 
 func (config *Config) DedicatedEnabled() bool {
