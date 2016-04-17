@@ -27,12 +27,21 @@ func (repo *LocalRepository) FindByID(instanceID string) (*Instance, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	max_clients, err := strconv.Atoi(conf.Get("maxclients"))
+	if(err != nil) {
+		return nil, err
+	}
+	max_memory, err := strconv.Atoi(conf.Get("maxmemory")[0:(len(conf.Get("maxmemory")) - 2)])
+	if(err != nil) {
+		return nil, err
+	}
 	instance := &Instance{
 		ID:       instanceID,
 		Password: conf.Get("requirepass"),
 		Port:     port,
 		Host:     repo.RedisConf.Host,
+		MaxClientConnections: max_clients,
+		MaxMemoryInMB: max_memory,
 	}
 
 	return instance, nil
@@ -162,8 +171,8 @@ func (repo *LocalRepository) WriteConfigFile(instance *Instance) error {
 		instance.ID,
 		strconv.Itoa(instance.Port),
 		instance.Password,
-		instance.MaxClientConnections,
 		instance.MaxMemoryInMB,
+		instance.MaxClientConnections,
 	)
 }
 
