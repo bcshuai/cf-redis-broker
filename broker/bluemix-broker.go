@@ -2,6 +2,7 @@ package broker
 
 import (
 	"github.com/bcshuai/brokerapi"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 )
 
 type BluemixServiceMetadata struct {
@@ -21,8 +22,8 @@ type BluemixRedisServiceBroker struct {
 }
 
 func (broker *BluemixRedisServiceBroker) Services() []brokerapi.IMetadataProvider {
-	config := broker.Config
-	services := []IMetadataProvider{}
+	config := broker.Config.RedisConfiguration
+	services := []brokerapi.IMetadataProvider{}
 	for _, serviceConfig := range config.Services {
 		service := brokerapi.Service {
 			ID:          serviceConfig.ServiceID,
@@ -37,9 +38,9 @@ func (broker *BluemixRedisServiceBroker) Services() []brokerapi.IMetadataProvide
 	}
 	return services
 }
-func getServiceMetaFromConfig(serviceMetadataConfig BluemixServiceMetadataConfig) BluemixServiceMetadata {
+func getServiceMetaFromConfig(serviceMetadataConfig brokerconfig.BluemixServiceMetadataConfig) BluemixServiceMetadata {
 	return BluemixServiceMetadata {
-		brokerapi.ServiceMetadata {
+		ServiceMetadata: brokerapi.ServiceMetadata {
 			DisplayName:      serviceMetadataConfig.DisplayName,
 			LongDescription:  serviceMetadataConfig.LongDescription,
 			DocumentationUrl: serviceMetadataConfig.DocumentationUrl,
@@ -51,11 +52,11 @@ func getServiceMetaFromConfig(serviceMetadataConfig BluemixServiceMetadataConfig
 		Type: serviceMetadataConfig.Type,
 	}
 }
-func getServicePlansFromConfigs(servicePlanConfigs []BluemixServicePlanConfig) []BluemixServicePlan {
-	plans := []BluemixServicePlan{}
+func getServicePlansFromConfigs(servicePlanConfigs []brokerconfig.BluemixServicePlanConfig) []brokerapi.IMetadataProvider {
+	plans := []brokerapi.IMetadataProvider{}
 	for _, planConfig := range servicePlanConfigs {
 		plan := BluemixServicePlan {
-			broker.ServicePlan {
+			ServicePlan: brokerapi.ServicePlan {
 				ID:          planConfig.ID,
 				Name:        planConfig.Name,
 				Description: planConfig.Description,
@@ -64,9 +65,11 @@ func getServicePlansFromConfigs(servicePlanConfigs []BluemixServicePlanConfig) [
 			MaxMemoryInMB: planConfig.MaxMemoryInMB,
 			MaxClientConnections: planConfig.MaxClientConnections, 
 		}
+		plans = append(plans, plan)
 	}
+	return plans
 }
-func getPlanMetaFromConfig(servicePlanMetadataConfig BluemixServicePlanMetadataConfig) brokerapi.ServicePlanMetadata {
+func getPlanMetaFromConfig(servicePlanMetadataConfig brokerconfig.BluemixServicePlanMetadataConfig) brokerapi.ServicePlanMetadata {
 	costs := []brokerapi.ServiceCost{}
 	costConfigs := servicePlanMetadataConfig.Costs
 	for _, costConfig := range costConfigs {

@@ -34,7 +34,7 @@ type ServiceConfiguration struct {
 	InstanceLogDirectory        string    `yaml:"log_directory"`
 	ServiceInstanceLimit        int       `yaml:"service_instance_limit"`
 	Dedicated                   Dedicated `yaml:"dedicated"`
-	Services 					BluemixServiceConfig `yaml:"services"`
+	Services 					[]BluemixServiceConfig `yaml:"services"`
 }
 
 type Dedicated struct {
@@ -44,8 +44,8 @@ type Dedicated struct {
 }
 
 type BluemixServiceConfig struct {
-	ServiceID 					string 									`yaml:"service_id"`
-	ServiceName     			string 									`yaml:"service_name"`
+	ServiceID 					string 									`yaml:"id"`
+	ServiceName     			string 									`yaml:"name"`
 	PlanUpdateable 				bool 									`yaml:"plan_updateable"`
 	Description 				string 									`yaml:"description"`
 	Metadata 					BluemixServiceMetadataConfig 			`yaml:"metadata"`
@@ -60,7 +60,7 @@ type BluemixServiceMetadataConfig struct {
 	ProviderDisplayName string `yaml:"providerDisplayName,omitempty"`
 	DocumentationUrl    string `yaml:"documentationUrl,omitempty"`
 	SupportUrl          string `yaml:"supportUrl,omitempty"`
-	ServiceKeysSupport  string `yaml:"serviceKeysSupported"`
+	ServiceKeysSupported  bool `yaml:"serviceKeysSupported"`
 	Type 				string `yaml:"type"`
 }
 type BluemixServicePlanConfig struct {

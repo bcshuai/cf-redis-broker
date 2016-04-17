@@ -8,11 +8,11 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/bcshuai/brokerapi",
-			"Rev": "4c5f5b6010079a093730050d118b995dec3ca1ee"
+			"Rev": "be350ce67a6b3ade7afae76e0f9fb17d26bba067"
 		},
 		{
 			"ImportPath": "github.com/bcshuai/brokerapi/auth",
-			"Rev": "4c5f5b6010079a093730050d118b995dec3ca1ee"
+			"Rev": "be350ce67a6b3ade7afae76e0f9fb17d26bba067"
 		},
 		{
 			"ImportPath": "github.com/cloudfoundry-incubator/candiedyaml",
