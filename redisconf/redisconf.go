@@ -193,7 +193,7 @@ func CopyWithInstanceAdditions(fromPath, toPath, syslogIdentSuffix, port, passwo
 	defaultConfig.Set("port", port)
 	defaultConfig.Set("requirepass", password)
 	defaultConfig.Set("maxclients", strconv.Itoa(max_client_connection))
-	defaultConfig.Set("maxmemory", "" + strconv.Itoa(max_memory_in_mb))
+	defaultConfig.Set("maxmemory", "" + strconv.Itoa(max_memory_in_mb) + "mb")
 	defaultConfig.Set("maxmemory-policy", "volatile-lru")
 	defaultConfig.Set("maxmemory-samples", "3")
 
