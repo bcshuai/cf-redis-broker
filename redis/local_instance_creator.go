@@ -52,7 +52,7 @@ func (localInstanceCreator *LocalInstanceCreator) Create(instanceID string) erro
 		Host:     localInstanceCreator.RedisConfiguration.Host,
 		Password: uuid.NewRandom().String(),
 	}
-	return localInstanceCreator.provisonInstance(instance)
+	return localInstanceCreator.ProvisonInstance(instance)
 }
 func (localInstanceCreator *LocalInstanceCreator) CreateWithRestriction(instanceID string, max_memory_in_mb, max_client_connection int) error {
 	instanceCount, err := localInstanceCreator.InstanceCount()
@@ -73,10 +73,10 @@ func (localInstanceCreator *LocalInstanceCreator) CreateWithRestriction(instance
 		MaxClientConnections: max_client_connection,
 		MaxMemoryInMB: max_memory_in_mb,
 	}
-	return localInstanceCreator.provisonInstance(instance)
+	return localInstanceCreator.ProvisonInstance(instance)
 }
 
-func (localInstanceCreator *LocalInstanceCreator) provisonInstance(instance *Instance) error {
+func (localInstanceCreator *LocalInstanceCreator) ProvisonInstance(instance *Instance) error {
 
 	err := localInstanceCreator.Setup(instance)
 	if err != nil {

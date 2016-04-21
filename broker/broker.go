@@ -13,9 +13,9 @@ const (
 )
 
 type InstanceCredentials struct {
-	Host     string
-	Port     int
-	Password string
+	Host     string  	`json:"host"`
+	Port     int 		`json:"port"`
+	Password string  	'json:"password"'
 }
 
 type InstanceCreator interface {
@@ -135,7 +135,7 @@ func (redisServiceBroker *RedisServiceBroker) Bind(instanceID, bindingID string,
 			return brokerapi.Binding{
 					credentialsMap,
 					"",
-				}, nil
+			}, nil
 		}
 	}
 

@@ -11,7 +11,6 @@ import (
 	"github.com/bcshuai/cf-redis-broker/broker"
 	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 )
-
 type RemoteRepository struct {
 	availableInstances []*Instance
 	allocatedInstances []*Instance
@@ -22,6 +21,7 @@ type RemoteRepository struct {
 	agentPort          string
 	sync.RWMutex
 }
+
 
 type AgentClient interface {
 	Reset(hostIP string) error

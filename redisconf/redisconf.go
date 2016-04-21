@@ -189,7 +189,7 @@ func CopyWithInstanceAdditions(fromPath, toPath, syslogIdentSuffix, port, passwo
 	defaultConfig.Set("syslog-enabled", "yes")
 	defaultConfig.Set("syslog-ident", fmt.Sprintf("redis-server-%s", syslogIdentSuffix))
 	defaultConfig.Set("syslog-facility", "local0")
-
+	
 	defaultConfig.Set("port", port)
 	defaultConfig.Set("requirepass", password)
 	defaultConfig.Set("maxclients", strconv.Itoa(max_client_connection))
