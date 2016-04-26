@@ -15,7 +15,11 @@ const (
 type InstanceCredentials struct {
 	Host     string  	`json:"host"`
 	Port     int 		`json:"port"`
-	Password string  	'json:"password"'
+	Password string  	`json:"password"`
+}
+
+type PortFinder interface {
+
 }
 
 type InstanceCreator interface {

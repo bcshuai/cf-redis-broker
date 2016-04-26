@@ -68,6 +68,22 @@ func (repo *LocalRepository) Setup(instance *Instance) error {
 	return nil
 }
 
+func (repo *LocalRepository) ProvisonInstance(instance *Instance) error {
+
+	err := repo.Setup(instance)
+	if err != nil {
+		return err
+	}
+
+
+	err = repo.Unlock(instance)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (repo *LocalRepository) Lock(instance *Instance) error {
 	lockFilePath := repo.lockFilePath(instance)
 	lockFile, err := os.Create(lockFilePath)

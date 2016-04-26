@@ -26,6 +26,9 @@ type LocalInstanceRepository interface {
 	InstanceCount() (int, error)
 	Lock(instance *Instance) error
 	Unlock(instance *Instance) error
+	AllInstances() ([]*Instance, error)
+	ProvisonInstance(instance *Instance) error 
+
 }
 
 type LocalInstanceCreator struct {

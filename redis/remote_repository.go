@@ -134,12 +134,16 @@ func (repo *RemoteRepository) Create(instanceID string) error {
 
 	instance := repo.allocateInstance(instanceID)
 
+	err := repo.ProvisonInstance(instance)
+
+	return err
+}
+func (repo *RemoteRepository) ProvisonInstance(instance *Instance) error {
 	err := repo.PersistStatefile()
 	if err != nil {
 		repo.deallocateInstance(instance)
 		return err
 	}
-
 	return nil
 }
 func (repo *RemoteRepository) CreateWithRestriction(instanceID string, max_memory_in_mb, max_client_connection int) error {

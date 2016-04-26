@@ -1,4 +1,4 @@
-package agentapi-sharednode
+package sharednodeagentapi
 
 import (
 	"net/http"
@@ -10,9 +10,9 @@ import (
 	"github.com/bcshuai/cf-redis-broker/broker"
 )
 type ResourceStatus struct {
-	All    	uint64		`json:"all"`
-	Used 	uint64		`json:"used"`
-	Free 	uint64 		`json:"free"`
+	All    	int		`json:"all"`
+	Used 	int		`json:"used"`
+	Free 	int 		`json:"free"`
 }
 
 type Resource struct {
@@ -32,34 +32,34 @@ type ApiProvider interface {
 	UnprovisionInstance(instanceId string) error
 }
 
-func New(provider *ApiProvider) http.Handler {
+func New(provider ApiProvider) http.Handler {
 	router := mux.NewRouter()
 
 	router.Path("/resources").
 			Methods("GET").
-			HandlerFunc(ResourcesHandler(provider))
+			HandlerFunc(resourcesHandler(provider))
 	router.Path("/all_instances").
 			Methods("GET").
-			HandlerFunc(AllInstancesHandler(provider))
+			HandlerFunc(allInstancesHandler(provider))
 	router.Path("/instance/{id}").
 			Methods("GET").
-			HandlerFunc(InstanceInfoHandler(provider))
-	router.Path("/instance/{id}").
-			Methods("HEAD").
-			HandlerFunc(InstanceExistsHandler(provider))
+			HandlerFunc(instanceInfoHandler(provider))
+	router.Path("/exist/{id}").
+			Methods("GET").
+			HandlerFunc(instanceExistsHandler(provider))
 	router.Path("/credential/{id}").
 			Methods("GET").
-			HandlerFunc(InstanceCredentialHandler(provider))
+			HandlerFunc(instanceCredentialHandler(provider))
 	router.Path("/instance/{id}").
 			Methods("PUT").
-			HandlerFunc(ProvisionInstanceHandler(provider))
+			HandlerFunc(provisionInstanceHandler(provider))
 	router.Path("/instance/{id}").
 			Methods("DELETE").
-			HandlerFunc(UnprovisionInstanceHandler(provider))
+			HandlerFunc(unprovisionInstanceHandler(provider))
 	return router
 }
 
-func ResourcesHandler(provider *ApiProvider) http.Handler {
+func resourcesHandler(provider ApiProvider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		res, err := provider.Resources()
 		if(err != nil){
@@ -69,25 +69,25 @@ func ResourcesHandler(provider *ApiProvider) http.Handler {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		encoder := json.NewEncoder(w)
-		encoder.Encode(credentials)
+		encoder.Encode(res)
 	}
 }
 
-func AllInstancesHandler(provider *ApiProvider) http.Handler {
+func allInstancesHandler(provider ApiProvider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		instances, err := provider.AllInstances()
 		if(err != nil){
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.Header.Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		encoder := json.NewEncoder(w)
 		encoder.Encode(instances)
 	}
 }
 
-func InstanceInfoHandler(provider *ApiProvider) http.Handler {
+func instanceInfoHandler(provider ApiProvider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		instanceId, ok := vars["id"]; 
@@ -96,26 +96,27 @@ func InstanceInfoHandler(provider *ApiProvider) http.Handler {
 			return
 		}
 		instance, err := provider.InstanceInfo(instanceId)
-		w.Header.Set("Content-Type", "application/json")
+		if(err != nil){
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		encoder := json.NewEncoder(w)
 		encoder.Encode(instance)
 	}	
 }
 
-func InstanceExistsHandler(provider *ApiProvider) http.Handler {
+func instanceExistsHandler(provider ApiProvider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		if instanceId, ok := vars["id"]; !ok {
-			http.Error(w, "Instance ID is required", http.StatusInternalServerError)
+		instanceId, ok := vars["id"]
+		if !ok {
+			w.WriteHeader(http.StatusNotFound)
 			return
 		}
 		ok, err := provider.InstanceExists(instanceId)
-		if(err != nil){
-			http.Error(w, err.Error(), http.StatusNotFound)
-			return
-		}
-		if !ok {
+		if !ok || err != nil {
 			w.WriteHeader(http.StatusNotFound)
 		}else{
 			w.WriteHeader(http.StatusOK)
@@ -123,26 +124,28 @@ func InstanceExistsHandler(provider *ApiProvider) http.Handler {
 	}
 }
 
-func InstanceCredentialHandler(provider *ApiProvider) http.Handler {
+func instanceCredentialHandler(provider ApiProvider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		if instanceId, ok := vars["id"]; !ok {
+
+		instanceId, ok := vars["id"]
+		if !ok {
 			http.Error(w, "Instance ID is required", http.StatusInternalServerError)
 			return
 		}
 		credential, err := provider.InstanceCredential(instanceId)
 		if(err != nil){
-			http.Error(w, err.Error, http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.Header.Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		encoder := json.NewEncoder(w)
 		encoder.Encode(credential)
 	}
 }
 
-func ProvisionInstanceHandler(provider *ApiProvider) http.Handler {
+func provisionInstanceHandler(provider ApiProvider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		body, err := ioutil.ReadAll(r.Body)
 		if(err != nil){
@@ -155,7 +158,7 @@ func ProvisionInstanceHandler(provider *ApiProvider) http.Handler {
 			http.Error(w, "The request contains wrong format content", http.StatusInternalServerError)
 			return
 		}
-		err := provider.ProvisionInstance(instance)
+		err = provider.ProvisionInstance(instance)
 		if(err != nil){
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		} else {
@@ -164,7 +167,7 @@ func ProvisionInstanceHandler(provider *ApiProvider) http.Handler {
 	}
 }
 
-func UnprovisionInstanceHandler(provider *ApiProvider) http.Handler {
+func unprovisionInstanceHandler(provider ApiProvider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		instanceId, ok := vars["id"]

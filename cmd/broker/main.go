@@ -16,6 +16,7 @@ import (
 	"github.com/bcshuai/cf-redis-broker/redis"
 	"github.com/bcshuai/cf-redis-broker/redisinstance"
 	"github.com/bcshuai/cf-redis-broker/system"
+	"github.com/bcshuai/cf-redis-broker/redis/sharednode"
 )
 
 func main() {
@@ -65,16 +66,23 @@ func main() {
 	if err != nil {
 		brokerLogger.Fatal("Error initializing remote repository", err)
 	}
-
+    
+    //added by Bin Cheng Shuai to support multi agent client
+	sharedRemoteRepo, err := sharednode.NewShareRemoteRepository(config, brokerLogger)
+	if err != nil {
+		brokerLogger.Fatal("Error initializing shared remote repository", err)
+	}
 	serviceBroker := &broker.BluemixRedisServiceBroker{
 		broker.RedisServiceBroker{
 			InstanceCreators: map[string]broker.InstanceCreator{
-				"shared":    localCreator,
+				"shared":    sharedRemoteRepo, //localCreator,
 				"dedicated": remoteRepo,
+				"local": localCreator,
 			},
 			InstanceBinders: map[string]broker.InstanceBinder{
-				"shared":    localRepo,
+				"shared":    sharedRemoteRepo, //localRepo,
 				"dedicated": remoteRepo,
+				"local": localRepo,
 			},
 			Config: config,
 		},
