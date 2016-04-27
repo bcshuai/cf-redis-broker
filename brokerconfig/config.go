@@ -68,7 +68,7 @@ type BluemixServicePlanConfig struct {
 	Name        string               `yaml:"name"`
 	Description string               `yaml:"description"`
 	MaxMemoryInMB 			int 		`yaml:"max_memory_mb"`
-	MaxClientConnections	int 		`yaml:"max_user_connection"`
+	MaxClientConnections	int 		`yaml:"max_client_connections"`
 	Metadata    BluemixServicePlanMetadataConfig `yaml:"metadata,omitempty"`    //ServicePlanMetadata
 }
 type BluemixServicePlanMetadataConfig struct {

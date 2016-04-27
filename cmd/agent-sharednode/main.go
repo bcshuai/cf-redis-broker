@@ -55,6 +55,7 @@ func main(){
 		InstanceCreator: localCreator,
  		InstanceRepo: localCreator,
  		Config: config,
+ 		Logger: logger,
 	}
 
 	apiProvider := api.New(agent)

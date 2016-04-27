@@ -58,6 +58,9 @@ func (repo *SharedRemoteRepository) CreateWithRestriction(instanceID string, max
 		MaxMemoryInMB: max_mem_in_mb,
 		MaxClientConnections: max_client_connection,
 	}
+	repo.Logger.Info("SharedRemoteRepository.CreateWithRestriction", lager.Data{
+			"instance": instance,
+	})
 	return repo.AgentClient.ProvisionInstance(instance)
 }
 func (repo *SharedRemoteRepository) Destroy(instanceID string) error {

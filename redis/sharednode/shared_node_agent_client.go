@@ -3,13 +3,15 @@ package sharednode
 import (
 	"fmt"
 	"errors"
+	"bytes"
 	"crypto/tls"
 	"net/http"
 	"io/ioutil"
 	"encoding/json"
-	"bufio"
-	"strings"
+	"io"
 	"strconv"
+
+	"log"
 
 	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 	"github.com/bcshuai/cf-redis-broker/broker"
@@ -28,11 +30,11 @@ func (client *SharedNodeAgentClient) getEndpoint(path string) string {
 	return "https://" + client.Host + ":" + portStr + path
 }
 func formatErrResponse(response *http.Response) error {
-	//body, _ := ioutil.ReadAll(response.Body)
+	body, _ := ioutil.ReadAll(response.Body)
 	formattedBody := ""
-	// if len(body) > 0 {
-	// 	formattedBody = fmt.Sprintf(", %s", string(body))
-	// }
+	 if len(body) > 0 {
+	 	formattedBody = fmt.Sprintf(", %s", string(body))
+	 }
 	return errors.New(fmt.Sprintf("Agent error: %d%s", response.StatusCode, formattedBody))
 }
 func (client *SharedNodeAgentClient) Resources() (sharednode.Resource, error){
@@ -128,7 +130,11 @@ func (client *SharedNodeAgentClient) InstanceExists(instanceId string) (bool, er
 		return false, err
 	}
 	defer response.Body.Close()
-
+     
+	if(response == nil){
+		log.Println("the response is nil in SharedNodeAgentClient.InstanceExists")
+		return false, errors.New("the response from agent is nil")
+	}
 	if(response.StatusCode == http.StatusNotFound){
 		return false, nil
 	} else if (response.StatusCode == http.StatusOK){
@@ -178,11 +184,8 @@ func (client *SharedNodeAgentClient) ProvisionInstance(instance redis.Instance) 
 	if(err != nil){
 		return err
 	}
-	strReader := strings.NewReader(string(instanceData))
 
-	strBufReader := bufio.NewReader(strReader)
-
-	response, err := client.doAuthenticatedRequest(PATH + instance.ID, METHOD, strBufReader)
+	response, err := client.doAuthenticatedRequest(PATH + instance.ID, METHOD, bytes.NewBuffer(instanceData))
 	if(err != nil){
 		return err
 	}
@@ -213,7 +216,7 @@ func (client *SharedNodeAgentClient) UnprovisionInstance(instanceId string) erro
 	}
 }
 
-func (client *SharedNodeAgentClient) doAuthenticatedRequest(path, method string, body *bufio.Reader) (*http.Response, error) {
+func (client *SharedNodeAgentClient) doAuthenticatedRequest(path, method string, body io.Reader) (*http.Response, error) {
 	request, err := http.NewRequest(method, client.getEndpoint(path), body)
 	if(err != nil){
 		return nil, err

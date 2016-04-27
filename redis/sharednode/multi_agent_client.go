@@ -133,7 +133,11 @@ func (client *MultiSharedNodeAgentClient) InstanceExists(instanceId string) (boo
 	for _, c := range client.AgentClients {
 		go func(tc *SharedNodeAgentClient) {
 			defer wg.Done()
-
+            if(tc == nil){
+            	client.Logger.Info("InstanceExists doing", lager.Data{
+					"Msg": "why client is nil",
+				})
+            }
 			ok, err := tc.InstanceExists(instanceId)
 			if (err == nil && ok){
 				atomic.AddUint32(&count, 1)
@@ -142,6 +146,9 @@ func (client *MultiSharedNodeAgentClient) InstanceExists(instanceId string) (boo
 	}
 	wg.Wait()
 	
+	client.Logger.Info("InstanceExists done", lager.Data{
+			"instanceId": instanceId,
+	})
 	if(count > 1){
 		return true, errors.New("too many instances")
 	} else if (count == 0){
@@ -238,10 +245,21 @@ func (client *MultiSharedNodeAgentClient) ProvisionInstance(instance redis.Insta
 			continue
 		}
 
-		usage := float32(res.InstanceStatus.Used) / float32(res.InstanceStatus.All)
-		if(usage < minUsageRate){
+		usage := float32(res.InstanceStatus.Free) / float32(res.InstanceStatus.All)
+		client.Logger.Info("Node.Resource", lager.Data{
+			host: res,
+			"free": usage,
+		})
+		if(usage > minUsageRate){
 			minUsageRate = usage
+			client.Logger.Info("Node.Resource", lager.Data{
+				"minUsageRate": minUsageRate,
+			})
+
 			targetHost = host
+			client.Logger.Info("Node.Resource", lager.Data{
+				"target Host": targetHost,
+			})
 		}
 	}
 	if(targetHost == ""){

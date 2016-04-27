@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 
 	"github.com/gorilla/mux"
 	"github.com/bcshuai/cf-redis-broker/redis"
@@ -153,11 +154,14 @@ func provisionInstanceHandler(provider ApiProvider) http.HandlerFunc {
 			return
 		}
 		instance := redis.Instance{}
+
 		err = json.Unmarshal(body, &instance)
 		if err != nil {
 			http.Error(w, "The request contains wrong format content", http.StatusInternalServerError)
 			return
 		}
+
+		log.Println(string(body))
 		err = provider.ProvisionInstance(instance)
 		if(err != nil){
 			http.Error(w, err.Error(), http.StatusInternalServerError)
