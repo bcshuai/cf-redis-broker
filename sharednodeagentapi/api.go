@@ -1,25 +1,26 @@
 package sharednodeagentapi
 
 import (
-	"net/http"
 	"encoding/json"
 	"io/ioutil"
-	"log"
+	"net/http"
 
-	"github.com/gorilla/mux"
-	"github.com/bcshuai/cf-redis-broker/redis"
 	"github.com/bcshuai/cf-redis-broker/broker"
+	"github.com/bcshuai/cf-redis-broker/redis"
+	"github.com/gorilla/mux"
+	"github.com/pivotal-golang/lager"
 )
+
 type ResourceStatus struct {
-	All    	int		`json:"all"`
-	Used 	int		`json:"used"`
-	Free 	int 		`json:"free"`
+	All  int `json:"all"`
+	Used int `json:"used"`
+	Free int `json:"free"`
 }
 
 type Resource struct {
 	//MemoryStatus 	ResourceStatus 		`json:"memory"`
 	//DiskStatus   	ResourceStatus 		`json:"disk"`
-	InstanceStatus 	ResourceStatus 		`json:"instances"`
+	InstanceStatus ResourceStatus `json:"instances"`
 	//CPUS			int 				`json:"cpus"`
 }
 
@@ -33,40 +34,45 @@ type ApiProvider interface {
 	UnprovisionInstance(instanceId string) error
 }
 
-func New(provider ApiProvider) http.Handler {
+func New(provider ApiProvider, logger lager.Logger) http.Handler {
 	router := mux.NewRouter()
 
 	router.Path("/resources").
-			Methods("GET").
-			HandlerFunc(resourcesHandler(provider))
+		Methods("GET").
+		HandlerFunc(resourcesHandler(provider, logger))
 	router.Path("/all_instances").
-			Methods("GET").
-			HandlerFunc(allInstancesHandler(provider))
+		Methods("GET").
+		HandlerFunc(allInstancesHandler(provider, logger))
 	router.Path("/instance/{id}").
-			Methods("GET").
-			HandlerFunc(instanceInfoHandler(provider))
+		Methods("GET").
+		HandlerFunc(instanceInfoHandler(provider, logger))
 	router.Path("/exist/{id}").
-			Methods("GET").
-			HandlerFunc(instanceExistsHandler(provider))
+		Methods("GET").
+		HandlerFunc(instanceExistsHandler(provider, logger))
 	router.Path("/credential/{id}").
-			Methods("GET").
-			HandlerFunc(instanceCredentialHandler(provider))
+		Methods("GET").
+		HandlerFunc(instanceCredentialHandler(provider, logger))
 	router.Path("/instance/{id}").
-			Methods("PUT").
-			HandlerFunc(provisionInstanceHandler(provider))
+		Methods("PUT").
+		HandlerFunc(provisionInstanceHandler(provider, logger))
 	router.Path("/instance/{id}").
-			Methods("DELETE").
-			HandlerFunc(unprovisionInstanceHandler(provider))
+		Methods("DELETE").
+		HandlerFunc(unprovisionInstanceHandler(provider, logger))
 	return router
 }
 
-func resourcesHandler(provider ApiProvider) http.HandlerFunc {
+func resourcesHandler(provider ApiProvider, logger lager.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		res, err := provider.Resources()
-		if(err != nil){
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		logger.Info("Api.resoucesHandler", lager.Data{
+			"Resouces": res,
+		})
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		encoder := json.NewEncoder(w)
@@ -74,13 +80,18 @@ func resourcesHandler(provider ApiProvider) http.HandlerFunc {
 	}
 }
 
-func allInstancesHandler(provider ApiProvider) http.HandlerFunc {
+func allInstancesHandler(provider ApiProvider, logger lager.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		instances, err := provider.AllInstances()
-		if(err != nil){
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		logger.Info("Api.allInstancesHandler", lager.Data{
+			"Instances": instances,
+		})
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		encoder := json.NewEncoder(w)
@@ -88,27 +99,32 @@ func allInstancesHandler(provider ApiProvider) http.HandlerFunc {
 	}
 }
 
-func instanceInfoHandler(provider ApiProvider) http.HandlerFunc {
+func instanceInfoHandler(provider ApiProvider, logger lager.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		instanceId, ok := vars["id"]; 
+		instanceId, ok := vars["id"]
 		if !ok {
 			http.Error(w, "Instance ID is required", http.StatusInternalServerError)
 			return
 		}
 		instance, err := provider.InstanceInfo(instanceId)
-		if(err != nil){
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		logger.Info("Api.instanceInfoHandler", lager.Data{
+			"InstanceInfo": instance,
+		})
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		encoder := json.NewEncoder(w)
 		encoder.Encode(instance)
-	}	
+	}
 }
 
-func instanceExistsHandler(provider ApiProvider) http.HandlerFunc {
+func instanceExistsHandler(provider ApiProvider, logger lager.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		instanceId, ok := vars["id"]
@@ -118,14 +134,20 @@ func instanceExistsHandler(provider ApiProvider) http.HandlerFunc {
 		}
 		ok, err := provider.InstanceExists(instanceId)
 		if !ok || err != nil {
+			logger.Info("Api.instanceExistsHandler", lager.Data{
+				"Instance Not Found": instanceId,
+			})
 			w.WriteHeader(http.StatusNotFound)
-		}else{
+		} else {
+			logger.Info("Api.instanceExistsHandler", lager.Data{
+				"Instance Found": instanceId,
+			})
 			w.WriteHeader(http.StatusOK)
 		}
 	}
 }
 
-func instanceCredentialHandler(provider ApiProvider) http.HandlerFunc {
+func instanceCredentialHandler(provider ApiProvider, logger lager.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
@@ -135,10 +157,13 @@ func instanceCredentialHandler(provider ApiProvider) http.HandlerFunc {
 			return
 		}
 		credential, err := provider.InstanceCredential(instanceId)
-		if(err != nil){
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		logger.Info("Api.instanceCredentialHandler", lager.Data{
+			"Msg": "Success to get instance credential",
+		})
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		encoder := json.NewEncoder(w)
@@ -146,10 +171,10 @@ func instanceCredentialHandler(provider ApiProvider) http.HandlerFunc {
 	}
 }
 
-func provisionInstanceHandler(provider ApiProvider) http.HandlerFunc {
+func provisionInstanceHandler(provider ApiProvider, logger lager.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		body, err := ioutil.ReadAll(r.Body)
-		if(err != nil){
+		if err != nil {
 			http.Error(w, "Server Internal Error", http.StatusInternalServerError)
 			return
 		}
@@ -161,9 +186,11 @@ func provisionInstanceHandler(provider ApiProvider) http.HandlerFunc {
 			return
 		}
 
-		log.Println(string(body))
+		logger.Info("Api.provisionInstanceHandler", lager.Data{
+			"Provisioning Instance": instance,
+		})
 		err = provider.ProvisionInstance(instance)
-		if(err != nil){
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		} else {
 			w.WriteHeader(http.StatusOK)
@@ -171,7 +198,7 @@ func provisionInstanceHandler(provider ApiProvider) http.HandlerFunc {
 	}
 }
 
-func unprovisionInstanceHandler(provider ApiProvider) http.HandlerFunc {
+func unprovisionInstanceHandler(provider ApiProvider, logger lager.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		instanceId, ok := vars["id"]
@@ -179,12 +206,14 @@ func unprovisionInstanceHandler(provider ApiProvider) http.HandlerFunc {
 			http.Error(w, "Instance ID is required", http.StatusInternalServerError)
 			return
 		}
+		logger.Info("Api.unprovisionInstanceHandler", lager.Data{
+			"Unprovisioning instance id": instanceId,
+		})
 		err := provider.UnprovisionInstance(instanceId)
-		if(err != nil){
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		} else {
 			w.WriteHeader(http.StatusOK)
 		}
 	}
 }
-

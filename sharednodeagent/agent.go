@@ -2,31 +2,31 @@ package sharednodeagent
 
 import (
 	"github.com/pborman/uuid"
-    "github.com/pivotal-golang/lager"
+	"github.com/pivotal-golang/lager"
 
 	"github.com/bcshuai/brokerapi"
+	"github.com/bcshuai/cf-redis-broker/broker"
+	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 	"github.com/bcshuai/cf-redis-broker/redis"
 	sharednode "github.com/bcshuai/cf-redis-broker/sharednodeagentapi"
-	"github.com/bcshuai/cf-redis-broker/brokerconfig"
-	"github.com/bcshuai/cf-redis-broker/broker"
 	"github.com/bcshuai/cf-redis-broker/system"
 )
 
 type SharedNodeAgent struct {
 	InstanceCreator broker.InstanceCreator
-	InstanceRepo redis.LocalInstanceRepository
-	Config           brokerconfig.Config
-	Logger			lager.Logger
+	InstanceRepo    redis.LocalInstanceRepository
+	Config          brokerconfig.Config
+	Logger          lager.Logger
 }
 
 func (client *SharedNodeAgent) Resources() (sharednode.Resource, error) {
 	limitation := client.Config.RedisConfiguration.ServiceInstanceLimit
 	used, err := client.InstanceRepo.InstanceCount()
-	if(err != nil){
+	if err != nil {
 		return sharednode.Resource{}, err
 	}
 	instanceStatus := sharednode.ResourceStatus{
-		All: limitation,
+		All:  limitation,
 		Used: used,
 		Free: limitation - used,
 	}
@@ -50,14 +50,14 @@ func (client *SharedNodeAgent) InstanceExists(instanceId string) (bool, error) {
 
 func (client *SharedNodeAgent) InstanceCredential(instanceId string) (broker.InstanceCredentials, error) {
 	ok, err := client.InstanceRepo.InstanceExists(instanceId)
-	if(err != nil){
+	if err != nil {
 		return broker.InstanceCredentials{}, err
 	}
 	if !ok {
 		return broker.InstanceCredentials{}, brokerapi.ErrInstanceDoesNotExist
 	}
 	instance, err := client.InstanceRepo.FindByID(instanceId)
-	if(err != nil){
+	if err != nil {
 		return broker.InstanceCredentials{}, err
 	}
 
@@ -70,7 +70,7 @@ func (client *SharedNodeAgent) InstanceCredential(instanceId string) (broker.Ins
 
 func (client *SharedNodeAgent) ProvisionInstance(instance redis.Instance) error {
 	ok, err := client.InstanceCreator.InstanceExists(instance.ID)
-	if(err != nil){
+	if err != nil {
 		return err
 	}
 	if ok {
@@ -85,13 +85,13 @@ func (client *SharedNodeAgent) ProvisionInstance(instance redis.Instance) error 
 	if instanceCount >= client.Config.RedisConfiguration.ServiceInstanceLimit {
 		return brokerapi.ErrInstanceLimitMet
 	}
-    
-    client.Logger.Info("SharedNodeAgent.ProvisonInstance", lager.Data{
-			"instance": instance,
+
+	client.Logger.Info("SharedNodeAgent.ProvisonInstance", lager.Data{
+		"instance": instance,
 	})
 
 	instance.Port, err = system.FindFreePort()
-	if(err != nil){
+	if err != nil {
 		return err
 	}
 	instance.Password = uuid.NewRandom().String()
@@ -101,7 +101,7 @@ func (client *SharedNodeAgent) ProvisionInstance(instance redis.Instance) error 
 
 func (client *SharedNodeAgent) UnprovisionInstance(instanceId string) error {
 	ok, err := client.InstanceCreator.InstanceExists(instanceId)
-	if(err != nil){
+	if err != nil {
 		return err
 	}
 	if !ok {

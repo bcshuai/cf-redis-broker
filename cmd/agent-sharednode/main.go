@@ -1,25 +1,25 @@
 package main
+
 import (
 	"flag"
 	"net/http"
 	"os"
 
-	sharednode "github.com/bcshuai/cf-redis-broker/sharednodeagent"
-	api "github.com/bcshuai/cf-redis-broker/sharednodeagentapi"
 	"github.com/bcshuai/brokerapi/auth"
+	"github.com/bcshuai/cf-redis-broker/availability"
 	"github.com/bcshuai/cf-redis-broker/brokerconfig"
-	"github.com/bcshuai/cf-redis-broker/system"
 	"github.com/bcshuai/cf-redis-broker/process"
 	"github.com/bcshuai/cf-redis-broker/redis"
-	"github.com/bcshuai/cf-redis-broker/availability"
+	sharednode "github.com/bcshuai/cf-redis-broker/sharednodeagent"
+	api "github.com/bcshuai/cf-redis-broker/sharednodeagentapi"
+	"github.com/bcshuai/cf-redis-broker/system"
 
 	"github.com/pivotal-golang/lager"
 )
 
-func main(){
+func main() {
 	configPath := flag.String("agentConfig", "", "Shared node agent config yaml")
 	flag.Parse()
-
 	logger := lager.NewLogger("shared-node-redis-agent")
 	logger.RegisterSink(lager.NewWriterSink(os.Stdout, lager.DEBUG))
 	logger.RegisterSink(lager.NewWriterSink(os.Stderr, lager.ERROR))
@@ -46,19 +46,19 @@ func main(){
 		WaitUntilConnectableFunc: availability.Check,
 	}
 	localCreator := &redis.LocalInstanceCreator{
-		FindFreePort: system.FindFreePort,
+		FindFreePort:            system.FindFreePort,
 		RedisConfiguration:      config.RedisConfiguration,
 		ProcessController:       processController,
 		LocalInstanceRepository: localRepo,
 	}
 	agent := &sharednode.SharedNodeAgent{
 		InstanceCreator: localCreator,
- 		InstanceRepo: localCreator,
- 		Config: config,
- 		Logger: logger,
+		InstanceRepo:    localCreator,
+		Config:          config,
+		Logger:          logger,
 	}
 
-	apiProvider := api.New(agent)
+	apiProvider := api.New(agent, logger)
 
 	handler := auth.NewWrapper(
 		config.AuthConfiguration.Username,
