@@ -1,20 +1,30 @@
 package sharednode
 
 import (
+	"errors"
 	"sync"
 	"sync/atomic"
-	"errors"
 
-	"github.com/bcshuai/cf-redis-broker/redis"
 	"github.com/bcshuai/cf-redis-broker/broker"
-	"github.com/pivotal-golang/lager"
+	"github.com/bcshuai/cf-redis-broker/redis"
 	api "github.com/bcshuai/cf-redis-broker/sharednodeagentapi"
+	"github.com/pivotal-golang/lager"
 )
 
 type MultiSharedNodeAgentClient struct {
-	AgentClients	[]*SharedNodeAgentClient
-	Logger	lager.Logger
+	AgentClients []*SharedNodeAgentClient
+	Logger       lager.Logger
 }
+
+func NewMultiSharedNodeAgentClient(clients []*SharedNodeAgentClient, logger lager.Logger) *MultiSharedNodeAgentClient {
+	multiSharedClient := &MultiSharedNodeAgentClient{
+		AgentClients: clients,
+		Logger:       logger,
+	}
+
+	return multiSharedClient
+}
+
 func (client *MultiSharedNodeAgentClient) Resources() (api.Resource, error) {
 	nodeCount := len(client.AgentClients)
 
@@ -27,25 +37,25 @@ func (client *MultiSharedNodeAgentClient) Resources() (api.Resource, error) {
 	nodeErrorMap := map[string]error{}
 
 	for _, c := range client.AgentClients {
-		go func(c *SharedNodeAgentClient){
+		go func(c *SharedNodeAgentClient) {
 			defer wg.Done()
 
 			res, err := c.Resources()
 			lock.Lock()
 			nodeResourceMap[c.Host] = res
-			nodeErrorMap[c.Host] = err	
+			nodeErrorMap[c.Host] = err
 			lock.Unlock()
 		}(c)
 	}
 	wg.Wait()
 
 	client.Logger.Info("MultiSharedNodeAgentClient.Resources", lager.Data{
-			"resources": nodeResourceMap,
+		"resources": nodeResourceMap,
 	})
 
 	allResource := api.Resource{
-		InstanceStatus: api.ResourceStatus{ 
-			All: 0,
+		InstanceStatus: api.ResourceStatus{
+			All:  0,
 			Free: 0,
 			Used: 0,
 		},
@@ -55,7 +65,7 @@ func (client *MultiSharedNodeAgentClient) Resources() (api.Resource, error) {
 		if err != nil {
 			continue
 		}
-		allResource.InstanceStatus.All =  allResource.InstanceStatus.All + res.InstanceStatus.All
+		allResource.InstanceStatus.All = allResource.InstanceStatus.All + res.InstanceStatus.All
 		allResource.InstanceStatus.Free = allResource.InstanceStatus.Free + res.InstanceStatus.Free
 		allResource.InstanceStatus.Used = allResource.InstanceStatus.Used + res.InstanceStatus.Used
 	}
@@ -71,25 +81,25 @@ func (client *MultiSharedNodeAgentClient) AllInstances() ([]*redis.Instance, err
 	instances := []*redis.Instance{}
 
 	for _, c := range client.AgentClients {
-		go func(c *SharedNodeAgentClient){
+		go func(c *SharedNodeAgentClient) {
 			defer wg.Done()
 
 			nodeInstances, err := c.AllInstances()
-			if(err == nil){
-				
+			if err == nil {
+
 				for _, i := range nodeInstances {
 					lock.Lock()
 					instances = append(instances, i)
 					lock.Unlock()
 				}
-				
+
 			}
 		}(c)
 	}
 	wg.Wait()
 	return instances, nil
 }
-func (client *MultiSharedNodeAgentClient) InstanceInfo(instanceId string) (*redis.Instance, error){
+func (client *MultiSharedNodeAgentClient) InstanceInfo(instanceId string) (*redis.Instance, error) {
 	nodeCount := len(client.AgentClients)
 
 	var wg sync.WaitGroup
@@ -98,11 +108,11 @@ func (client *MultiSharedNodeAgentClient) InstanceInfo(instanceId string) (*redi
 	wg.Add(nodeCount)
 	instances := []*redis.Instance{}
 	for _, c := range client.AgentClients {
-		go func(c *SharedNodeAgentClient){
+		go func(c *SharedNodeAgentClient) {
 			defer wg.Done()
 
 			nodeInstance, err := c.InstanceInfo(instanceId)
-			if(err == nil){
+			if err == nil {
 				lock.Lock()
 				instances = append(instances, nodeInstance)
 				lock.Unlock()
@@ -112,10 +122,10 @@ func (client *MultiSharedNodeAgentClient) InstanceInfo(instanceId string) (*redi
 	wg.Wait()
 
 	count := len(instances)
-	if(count == 0){
+	if count == 0 {
 		return nil, nil
 	}
-	if(count > 1) {
+	if count > 1 {
 		return instances[0], errors.New("too many instances")
 	}
 
@@ -133,25 +143,25 @@ func (client *MultiSharedNodeAgentClient) InstanceExists(instanceId string) (boo
 	for _, c := range client.AgentClients {
 		go func(tc *SharedNodeAgentClient) {
 			defer wg.Done()
-            if(tc == nil){
-            	client.Logger.Info("InstanceExists doing", lager.Data{
+			if tc == nil {
+				client.Logger.Info("InstanceExists doing", lager.Data{
 					"Msg": "why client is nil",
 				})
-            }
+			}
 			ok, err := tc.InstanceExists(instanceId)
-			if (err == nil && ok){
+			if err == nil && ok {
 				atomic.AddUint32(&count, 1)
 			}
 		}(c)
 	}
 	wg.Wait()
-	
+
 	client.Logger.Info("InstanceExists done", lager.Data{
-			"instanceId": instanceId,
+		"instanceId": instanceId,
 	})
-	if(count > 1){
+	if count > 1 {
 		return true, errors.New("too many instances")
-	} else if (count == 0){
+	} else if count == 0 {
 		client.Logger.Info("Instance does not exist", lager.Data{
 			"instanceId": instanceId,
 		})
@@ -170,11 +180,11 @@ func (client *MultiSharedNodeAgentClient) InstanceCredential(instanceId string) 
 	credentials := []broker.InstanceCredentials{}
 
 	for _, c := range client.AgentClients {
-		go func(c *SharedNodeAgentClient){
+		go func(c *SharedNodeAgentClient) {
 			defer wg.Done()
 
 			nodeCredential, err := c.InstanceCredential(instanceId)
-			if(err == nil){
+			if err == nil {
 				lock.Lock()
 				credentials = append(credentials, nodeCredential)
 				lock.Unlock()
@@ -184,13 +194,13 @@ func (client *MultiSharedNodeAgentClient) InstanceCredential(instanceId string) 
 	wg.Wait()
 
 	count := len(credentials)
-	if(count == 0){
+	if count == 0 {
 		client.Logger.Info("Instance does not exist", lager.Data{
 			"instanceId": instanceId,
 		})
 		return broker.InstanceCredentials{}, errors.New("instance does not exist")
 	}
-	if(count > 1) {
+	if count > 1 {
 		return broker.InstanceCredentials{}, errors.New("too many instances")
 	}
 
@@ -198,7 +208,7 @@ func (client *MultiSharedNodeAgentClient) InstanceCredential(instanceId string) 
 }
 func (client *MultiSharedNodeAgentClient) getClinetByHost(host string) *SharedNodeAgentClient {
 	for _, c := range client.AgentClients {
-		if(c.Host == host){
+		if c.Host == host {
 			return c
 		}
 	}
@@ -214,11 +224,11 @@ func (client *MultiSharedNodeAgentClient) ProvisionInstance(instance redis.Insta
 
 	nodeResourceMap := map[string]api.Resource{}
 	for _, c := range client.AgentClients {
-		go func(c *SharedNodeAgentClient){
+		go func(c *SharedNodeAgentClient) {
 			defer wg.Done()
 
 			res, err := c.Resources()
-			if(err == nil){
+			if err == nil {
 				lock.Lock()
 				client.Logger.Info("resource: ", lager.Data{
 					"resources": res,
@@ -235,7 +245,7 @@ func (client *MultiSharedNodeAgentClient) ProvisionInstance(instance redis.Insta
 	wg.Wait()
 
 	client.Logger.Info("MultiSharedNodeAgentClient.Resources", lager.Data{
-			"resources": nodeResourceMap,
+		"resources": nodeResourceMap,
 	})
 
 	targetHost := ""
@@ -247,10 +257,10 @@ func (client *MultiSharedNodeAgentClient) ProvisionInstance(instance redis.Insta
 
 		usage := float32(res.InstanceStatus.Free) / float32(res.InstanceStatus.All)
 		client.Logger.Info("Node.Resource", lager.Data{
-			host: res,
+			host:   res,
 			"free": usage,
 		})
-		if(usage > minUsageRate){
+		if usage > minUsageRate {
 			minUsageRate = usage
 			client.Logger.Info("Node.Resource", lager.Data{
 				"minUsageRate": minUsageRate,
@@ -262,7 +272,7 @@ func (client *MultiSharedNodeAgentClient) ProvisionInstance(instance redis.Insta
 			})
 		}
 	}
-	if(targetHost == ""){
+	if targetHost == "" {
 		return errors.New("unable to find available node to provision the instance")
 	}
 	targetClient := client.getClinetByHost(targetHost)
@@ -270,10 +280,10 @@ func (client *MultiSharedNodeAgentClient) ProvisionInstance(instance redis.Insta
 }
 func (client *MultiSharedNodeAgentClient) UnprovisionInstance(instanceId string) error {
 	instance, err := client.InstanceInfo(instanceId)
-	if(err != nil){
+	if err != nil {
 		return err
 	}
-	if(instance == nil){
+	if instance == nil {
 		return nil
 	}
 
