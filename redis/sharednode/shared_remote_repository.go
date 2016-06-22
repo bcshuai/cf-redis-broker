@@ -35,7 +35,7 @@ func NewShareRemoteRepository(config brokerconfig.Config, logger lager.Logger) (
 		clients = append(clients, client)
 	}
 
-	multiAgentClient := NewMultiSharedNodeAgentClient(clients, logger)
+	multiAgentClient := NewCachedMultiSharedNodeAgentClient(clients, logger)
 
 	return &SharedRemoteRepository{
 		AgentClient: multiAgentClient,

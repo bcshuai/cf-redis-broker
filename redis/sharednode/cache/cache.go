@@ -30,6 +30,7 @@ type Cache struct {
 	storage         map[string]interface{} //the backend storage for this cache
 	lock            sync.RWMutex
 
+	ticker   *time.Ticker
 	started  int32     //a value to indicated weather the auto-refreshing is started or not
 	stopChan chan bool //a channel used to wait the auto refreshing goroutine to stop
 }
@@ -85,20 +86,19 @@ func (cache *Cache) startAutoRefresh() {
 		return
 	}
 
+	cache.ticker = time.NewTicker(cache.refreshInterval)
 	cache.stopChan = make(chan bool, 1)
 	atomic.StoreInt32(&cache.started, 1)
 
 	go func() {
-		for {
-			if cache.IsAutoRefreshingStarted() {
-				time.AfterFunc(cache.refreshInterval, func() {
-					cache.updateCache()
-				})
-			} else {
-				cache.stopChan <- true
-			}
+		select {
+		case <-cache.stopChan:
+			//stop to refresh cache
+			break
+		case <-cache.ticker.C:
+			//update the cache
+			cache.updateCache()
 		}
-
 	}()
 }
 
@@ -108,8 +108,11 @@ func (cache *Cache) stopAutoRefresh() {
 	}
 	atomic.StoreInt32(&cache.started, 0) //now the auto refreshing is disabled
 	//now wait the auto refreshing goroutine to end
+	if cache.ticker != nil {
+		cache.ticker.Stop()
+	}
 	if cache.stopChan != nil {
-		<-cache.stopChan
+		cache.stopChan <- true
 	}
 }
 

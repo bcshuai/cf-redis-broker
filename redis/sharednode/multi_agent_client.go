@@ -206,7 +206,7 @@ func (client *MultiSharedNodeAgentClient) InstanceCredential(instanceId string) 
 
 	return credentials[0], nil
 }
-func (client *MultiSharedNodeAgentClient) getClinetByHost(host string) *SharedNodeAgentClient {
+func (client *MultiSharedNodeAgentClient) getClientByHost(host string) *SharedNodeAgentClient {
 	for _, c := range client.AgentClients {
 		if c.Host == host {
 			return c
@@ -275,7 +275,7 @@ func (client *MultiSharedNodeAgentClient) ProvisionInstance(instance redis.Insta
 	if targetHost == "" {
 		return errors.New("unable to find available node to provision the instance")
 	}
-	targetClient := client.getClinetByHost(targetHost)
+	targetClient := client.getClientByHost(targetHost)
 	return targetClient.ProvisionInstance(instance)
 }
 func (client *MultiSharedNodeAgentClient) UnprovisionInstance(instanceId string) error {
@@ -287,6 +287,6 @@ func (client *MultiSharedNodeAgentClient) UnprovisionInstance(instanceId string)
 		return nil
 	}
 
-	c := client.getClinetByHost(instance.Host)
+	c := client.getClientByHost(instance.Host)
 	return c.UnprovisionInstance(instanceId)
 }
