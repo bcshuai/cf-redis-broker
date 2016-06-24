@@ -91,13 +91,15 @@ func (cache *Cache) startAutoRefresh() {
 	atomic.StoreInt32(&cache.started, 1)
 
 	go func() {
-		select {
-		case <-cache.stopChan:
-			//stop to refresh cache
-			break
-		case <-cache.ticker.C:
-			//update the cache
-			cache.updateCache()
+		for {
+			select {
+			case <-cache.stopChan:
+				//stop to refresh cache
+				break
+			case <-cache.ticker.C:
+				//update the cache
+				cache.updateCache()
+			}
 		}
 	}()
 }
