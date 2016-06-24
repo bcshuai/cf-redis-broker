@@ -108,10 +108,17 @@ func (client *CachedMultiSharedNodeAgentClient) Resources() (api.Resource, error
 		host := node.Host
 		val := client.resourceCache.Get(host)
 		if val == nil {
+			client.logger.Info("CachedMultisharedClient.Resources", lager.Data{
+				"Msg": "failed to get resource info from host: " + host,
+			})
 			continue
 		}
 		res, ok := val.(api.Resource)
 		if !ok {
+			client.logger.Info("CachedMultisharedClient.Resources", lager.Data{
+				"Msg":   "unable to convert interface{} to api.Resource",
+				"Value": val,
+			})
 			continue
 		}
 		allResource.InstanceStatus.All += res.InstanceStatus.All
@@ -126,10 +133,17 @@ func (client *CachedMultiSharedNodeAgentClient) AllInstances() ([]*redis.Instanc
 	for _, node := range client.clients {
 		val := client.instancesCache.Get(node.Host)
 		if val == nil {
+			client.logger.Info("CachedMultisharedClient.AllInstances", lager.Data{
+				"Msg": "failed to get All instances from host: " + node.Host,
+			})
 			continue
 		}
 		nodeInstances, ok := val.([]*redis.Instance)
 		if !ok {
+			client.logger.Info("CachedMultisharedClient.AllInstances", lager.Data{
+				"Msg":   "unable to convert interface{} to []*redis.Instance",
+				"Value": val,
+			})
 			continue
 		}
 		for _, instance := range nodeInstances {
