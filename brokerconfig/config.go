@@ -51,6 +51,7 @@ type BluemixServiceConfig struct {
 	ServiceID       string                              `yaml:"id"`
 	ServiceName     string                              `yaml:"name"`
 	PlanUpdateable  bool                                `yaml:"plan_updateable"`
+	Bindable        bool                                `yaml:"bindable,omitempty"`
 	Description     string                              `yaml:"description"`
 	Metadata        BluemixServiceMetadataConfig        `yaml:"metadata"`
 	Plans           []BluemixServicePlanConfig          `yaml:"plans"`
@@ -60,17 +61,22 @@ type BluemixServiceConfig struct {
 type BluemixServiceMetadataConfig struct {
 	DisplayName          string `yaml:"displayName,omitempty"`
 	ImageUrl             string `yaml:"imageUrl,omitempty"`
+	SmallImageUrl        string `yaml:"smallImageUrl"`
+	MediumImageUrl       string `yaml:"mediumImageUrl,omitempty"`
+	FeaturedImageUrl     string `yaml:"featuredImageUrl,omitempty"`
 	LongDescription      string `yaml:"longDescription,omitempty"`
 	ProviderDisplayName  string `yaml:"providerDisplayName,omitempty"`
 	DocumentationUrl     string `yaml:"documentationUrl,omitempty"`
 	SupportUrl           string `yaml:"supportUrl,omitempty"`
 	ServiceKeysSupported bool   `yaml:"serviceKeysSupported"`
+	ServiceMonitorApi    string `yaml:"serviceMonitorApi,omitempty"`
 	Type                 string `yaml:"type"`
 }
 type BluemixServicePlanConfig struct {
 	ID                   string                           `yaml:"id"`
 	Name                 string                           `yaml:"name"`
 	Description          string                           `yaml:"description"`
+	Free                 bool                             `yaml:"free,omitempty"`
 	MaxMemoryInMB        int                              `yaml:"max_memory_mb"`
 	MaxClientConnections int                              `yaml:"max_client_connections"`
 	Metadata             BluemixServicePlanMetadataConfig `yaml:"metadata,omitempty"` //ServicePlanMetadata

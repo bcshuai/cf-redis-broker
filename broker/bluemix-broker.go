@@ -11,11 +11,16 @@ type BluemixServiceMetadata struct {
 	brokerapi.ServiceMetadata
 	ServiceKeysSupported bool   `json:"serviceKeysSupported,omitempty"`
 	Type                 string `json:"type, omitempty"`
+	SmallImageUrl        string `json:"smallImageUrl,omitempty"`
+	MediumImageUrl       string `json:"mediumImageUrl,omitempty"`
+	FeaturedImageUrl     string `json:"featuredImageUrl,omitempty"`
+	ServiceMonitorApi    string `json:"serviceMonitorApi,omitempty"`
 }
 
 type BluemixServicePlan struct {
 	brokerapi.ServicePlan
 	MaxMemoryInMB        int `json:"max_memory_mb"`
+	Free                 bool `json:"free"`
 	MaxClientConnections int `json:"max_client_connection"`
 }
 
@@ -110,6 +115,10 @@ func getServiceMetaFromConfig(serviceMetadataConfig brokerconfig.BluemixServiceM
 			ProviderDisplayName: serviceMetadataConfig.ProviderDisplayName,
 		},
 		ServiceKeysSupported: serviceMetadataConfig.ServiceKeysSupported,
+		SmallImageUrl:        serviceMetadataConfig.SmallImageUrl,
+		MediumImageUrl:       serviceMetadataConfig.MediumImageUrl,
+		FeaturedImageUrl:     serviceMetadataConfig.FeaturedImageUrl,
+		ServiceMonitorApi:    serviceMetadataConfig.ServiceMonitorApi,
 		Type:                 serviceMetadataConfig.Type,
 	}
 }
@@ -124,6 +133,7 @@ func getServicePlansFromConfigs(servicePlanConfigs []brokerconfig.BluemixService
 				Metadata:    getPlanMetaFromConfig(planConfig.Metadata),
 			},
 			MaxMemoryInMB:        planConfig.MaxMemoryInMB,
+			Free:                 planConfig.Free,
 			MaxClientConnections: planConfig.MaxClientConnections,
 		}
 		plans = append(plans, plan)
