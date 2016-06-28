@@ -5,8 +5,8 @@ import (
 	"github.com/pivotal-golang/lager"
 
 	"github.com/bcshuai/brokerapi"
+	"github.com/bcshuai/cf-redis-broker/agentconfig"
 	"github.com/bcshuai/cf-redis-broker/broker"
-	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 	"github.com/bcshuai/cf-redis-broker/redis"
 	sharednode "github.com/bcshuai/cf-redis-broker/sharednodeagentapi"
 	"github.com/bcshuai/cf-redis-broker/system"
@@ -15,12 +15,12 @@ import (
 type SharedNodeAgent struct {
 	InstanceCreator broker.InstanceCreator
 	InstanceRepo    redis.LocalInstanceRepository
-	Config          brokerconfig.Config
+	Config          agentconfig.SharedAgentConfig
 	Logger          lager.Logger
 }
 
 func (client *SharedNodeAgent) Resources() (sharednode.Resource, error) {
-	limitation := client.Config.RedisConfiguration.ServiceInstanceLimit
+	limitation := client.Config.ServiceInstanceLimit
 	used, err := client.InstanceRepo.InstanceCount()
 	if err != nil {
 		return sharednode.Resource{}, err
@@ -82,7 +82,7 @@ func (client *SharedNodeAgent) ProvisionInstance(instance redis.Instance) error 
 		return err
 	}
 
-	if instanceCount >= client.Config.RedisConfiguration.ServiceInstanceLimit {
+	if instanceCount >= client.Config.ServiceInstanceLimit {
 		return brokerapi.ErrInstanceLimitMet
 	}
 

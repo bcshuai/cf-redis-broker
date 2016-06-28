@@ -26,7 +26,8 @@ func NewShareRemoteRepository(config brokerconfig.Config, logger lager.Logger) (
 
 	clients := []*SharedNodeAgentClient{}
 
-	for _, host := range config.RedisConfiguration.Shared.Nodes {
+	//for _, host := range config.RedisConfiguration.Shared.Nodes {
+	for _, host := range config.Shared.Nodes {
 		client := &SharedNodeAgentClient{
 			Host:            host,
 			Port:            agentPort,

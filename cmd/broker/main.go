@@ -8,15 +8,12 @@ import (
 	"github.com/bcshuai/brokerapi/auth"
 	"github.com/pivotal-golang/lager"
 
-	"github.com/bcshuai/cf-redis-broker/availability"
 	"github.com/bcshuai/cf-redis-broker/broker"
 	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 	"github.com/bcshuai/cf-redis-broker/debug"
-	"github.com/bcshuai/cf-redis-broker/process"
 	"github.com/bcshuai/cf-redis-broker/redis"
 	"github.com/bcshuai/cf-redis-broker/redis/sharednode"
 	"github.com/bcshuai/cf-redis-broker/redisinstance"
-	"github.com/bcshuai/cf-redis-broker/system"
 )
 
 func main() {
@@ -35,34 +32,34 @@ func main() {
 		})
 	}
 
-	commandRunner := system.OSCommandRunner{
+	/*commandRunner := system.OSCommandRunner{
 		Logger: brokerLogger,
-	}
+	}*/
 
-	localRepo := &redis.LocalRepository{
+	/*localRepo := &redis.LocalRepository{
 		RedisConf: config.RedisConfiguration,
-	}
+	}*/
 
-	processController := &redis.OSProcessController{
+	/*processController := &redis.OSProcessController{
 		CommandRunner:            commandRunner,
 		InstanceInformer:         localRepo,
 		Logger:                   brokerLogger,
 		ProcessChecker:           &process.ProcessChecker{},
 		ProcessKiller:            &process.ProcessKiller{},
 		WaitUntilConnectableFunc: availability.Check,
-	}
+	}*/
 
-	localCreator := &redis.LocalInstanceCreator{
+	/*localCreator := &redis.LocalInstanceCreator{
 		FindFreePort:            system.FindFreePort,
 		RedisConfiguration:      config.RedisConfiguration,
 		ProcessController:       processController,
 		LocalInstanceRepository: localRepo,
-	}
+	}*/
 
 	agentClient := &redis.RemoteAgentClient{
 		HttpAuth: config.AuthConfiguration,
 	}
-	remoteRepo, err := redis.NewRemoteRepository(agentClient, config)
+	remoteRepo, err := redis.NewRemoteRepository(agentClient, config, brokerLogger)
 	if err != nil {
 		brokerLogger.Fatal("Error initializing remote repository", err)
 	}
@@ -77,12 +74,12 @@ func main() {
 			InstanceCreators: map[string]broker.InstanceCreator{
 				"shared":    sharedRemoteRepo, //localCreator,
 				"dedicated": remoteRepo,
-				"local":     localCreator,
+				//				"local":     localCreator,
 			},
 			InstanceBinders: map[string]broker.InstanceBinder{
 				"shared":    sharedRemoteRepo, //localRepo,
 				"dedicated": remoteRepo,
-				"local":     localRepo,
+				//				"local":     localRepo,
 			},
 			Config: config,
 		},

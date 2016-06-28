@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/bcshuai/brokerapi/auth"
+	"github.com/bcshuai/cf-redis-broker/agentconfig"
 	"github.com/bcshuai/cf-redis-broker/availability"
-	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 	"github.com/bcshuai/cf-redis-broker/process"
 	"github.com/bcshuai/cf-redis-broker/redis"
 	sharednode "github.com/bcshuai/cf-redis-broker/sharednodeagent"
@@ -24,7 +24,8 @@ func main() {
 	logger.RegisterSink(lager.NewWriterSink(os.Stdout, lager.DEBUG))
 	logger.RegisterSink(lager.NewWriterSink(os.Stderr, lager.ERROR))
 
-	config, err := brokerconfig.ParseConfig(*configPath)
+	//config, err := brokerconfig.ParseConfig(*configPath)
+	config, err := agentconfig.ParseSharedAgentConfig(*configPath)
 	if err != nil {
 		logger.Fatal("Loading config file", err, lager.Data{
 			"broker-config-path": configPath,
@@ -35,7 +36,7 @@ func main() {
 		Logger: logger,
 	}
 	localRepo := &redis.LocalRepository{
-		RedisConf: config.RedisConfiguration,
+		RedisConf: config,
 	}
 	processController := &redis.OSProcessController{
 		CommandRunner:            commandRunner,
@@ -47,7 +48,7 @@ func main() {
 	}
 	localCreator := &redis.LocalInstanceCreator{
 		FindFreePort:            system.FindFreePort,
-		RedisConfiguration:      config.RedisConfiguration,
+		RedisConfiguration:      config,
 		ProcessController:       processController,
 		LocalInstanceRepository: localRepo,
 	}
@@ -68,5 +69,5 @@ func main() {
 	)
 
 	http.Handle("/", handler)
-	logger.Fatal("http-listen", http.ListenAndServe("localhost:"+config.Port, nil))
+	logger.Fatal("http-listen", http.ListenAndServe(config.Host+":"+config.Port, nil))
 }

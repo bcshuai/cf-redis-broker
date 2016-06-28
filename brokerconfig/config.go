@@ -8,7 +8,7 @@ import (
 	"github.com/cloudfoundry-incubator/candiedyaml"
 )
 
-type Config struct {
+type OldConfig struct {
 	RedisConfiguration        ServiceConfiguration `yaml:"redis"`
 	AuthConfiguration         AuthConfiguration    `yaml:"auth"`
 	Host                      string               `yaml:"backend_host"`
@@ -16,6 +16,16 @@ type Config struct {
 	MonitExecutablePath       string               `yaml:"monit_executable_path"`
 	RedisServerExecutablePath string               `yaml:"redis_server_executable_path"`
 	AgentPort                 string               `yaml:"agent_port"`
+}
+
+type Config struct {
+	Host              string                 `yaml:"backend_host"`
+	Port              string                 `yaml:"backend_port"`
+	AgentPort         string                 `yaml:"agent_port"`
+	AuthConfiguration AuthConfiguration      `yaml:"auth"`
+	Shared            Shared                 `yaml:"shared"`
+	Dedicated         Dedicated              `yaml:"dedicated"`
+	Services          []BluemixServiceConfig `yaml:"services"`
 }
 
 type AuthConfiguration struct {
@@ -38,7 +48,7 @@ type ServiceConfiguration struct {
 
 type Shared struct {
 	Nodes []string `yaml:"nodes"`
-	Port  int      `ymal:"port"`
+	Port  int      `ymal:"port"` //agent port
 }
 
 type Dedicated struct {
@@ -90,12 +100,14 @@ type BluemixServiceDashboardClientConfig struct {
 }
 
 func (config *Config) DedicatedEnabled() bool {
-	return len(config.RedisConfiguration.Dedicated.Nodes) > 0
+	//return len(config.RedisConfiguration.Dedicated.Nodes) > 0
+	return len(config.Dedicated.Nodes) > 0
 }
 
 func (config *Config) SharedEnabled() bool {
-	return config.RedisConfiguration.ServiceInstanceLimit > 0 &&
-		len(config.RedisConfiguration.Shared.Nodes) > 0
+	//return config.RedisConfiguration.ServiceInstanceLimit > 0 &&
+	//	len(config.RedisConfiguration.Shared.Nodes) > 0
+	return len(config.Shared.Nodes) > 0
 }
 
 func ParseConfig(path string) (Config, error) {
@@ -109,7 +121,8 @@ func ParseConfig(path string) (Config, error) {
 		return Config{}, err
 	}
 
-	return config, ValidateConfig(config.RedisConfiguration)
+	//return config, ValidateConfig(config.RedisConfiguration)
+	return config, nil
 }
 
 func ValidateConfig(config ServiceConfiguration) error {
