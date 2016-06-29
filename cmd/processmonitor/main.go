@@ -7,8 +7,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/bcshuai/cf-redis-broker/agentconfig"
 	"github.com/bcshuai/cf-redis-broker/availability"
-	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 	"github.com/bcshuai/cf-redis-broker/process"
 	"github.com/bcshuai/cf-redis-broker/redis"
 	"github.com/bcshuai/cf-redis-broker/system"
@@ -29,7 +29,7 @@ func main() {
 		skipProcessCheck = true
 	}()
 
-	config, err := brokerconfig.ParseConfig(configPath())
+	config, err := agentconfig.ParseSharedAgentConfig(configPath())
 	if err != nil {
 		logger.Fatal("could not parse config file", err, lager.Data{
 			"config-path": configPath(),
@@ -39,7 +39,7 @@ func main() {
 	logger.Info("Starting process monitor")
 
 	repo := &redis.LocalRepository{
-		RedisConf: config.RedisConfiguration,
+		RedisConf: config,
 	}
 
 	commandRunner := system.OSCommandRunner{
@@ -55,7 +55,7 @@ func main() {
 		WaitUntilConnectableFunc: availability.Check,
 	}
 
-	checkInterval := config.RedisConfiguration.ProcessCheckIntervalSeconds
+	checkInterval := config.ProcessCheckIntervalSeconds
 
 	instances, err := repo.AllInstances()
 	if err != nil {

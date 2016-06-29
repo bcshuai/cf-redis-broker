@@ -13,13 +13,12 @@ const (
 )
 
 type InstanceCredentials struct {
-	Host     string  	`json:"host"`
-	Port     int 		`json:"port"`
-	Password string  	`json:"password"`
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	Password string `json:"password"`
 }
 
 type PortFinder interface {
-
 }
 
 type InstanceCreator interface {
@@ -75,11 +74,11 @@ func (redisServiceBroker *RedisServiceBroker) Services() []brokerapi.IMetadataPr
 	}
 }
 
-func (redisServiceBroker *RedisServiceBroker) Provision(instanceID string, details brokerapi.ProvisionDetails, asyncAllowed bool) (brokerapi.ProvisionedServiceSpec, error){
-	
+func (redisServiceBroker *RedisServiceBroker) Provision(instanceID string, details brokerapi.ProvisionDetails, asyncAllowed bool) (brokerapi.ProvisionedServiceSpec, error) {
+
 	spec := brokerapi.ProvisionedServiceSpec{
-		false,
-		"",
+		IsAsync:      false,
+		DashboardURL: "",
 	}
 
 	if redisServiceBroker.instanceExists(instanceID) {
@@ -110,26 +109,26 @@ func (redisServiceBroker *RedisServiceBroker) Provision(instanceID string, detai
 	return spec, instanceCreator.Create(instanceID)
 }
 
-func (redisServiceBroker *RedisServiceBroker) Deprovision(instanceID string, details brokerapi.DeprovisionDetails, asyncAllowed bool) (brokerapi.IsAsync, error){
+func (redisServiceBroker *RedisServiceBroker) Deprovision(instanceID string, details brokerapi.DeprovisionDetails, asyncAllowed bool) (brokerapi.IsAsync, error) {
 	for _, instanceCreator := range redisServiceBroker.InstanceCreators {
 		instanceExists, _ := instanceCreator.InstanceExists(instanceID)
 		if instanceExists {
-			return false,instanceCreator.Destroy(instanceID)
+			return false, instanceCreator.Destroy(instanceID)
 		}
 	}
-	return false,brokerapi.ErrInstanceDoesNotExist
+	return false, brokerapi.ErrInstanceDoesNotExist
 }
 
-func (redisServiceBroker *RedisServiceBroker) Bind(instanceID, bindingID string, details brokerapi.BindDetails) (brokerapi.Binding, error){
+func (redisServiceBroker *RedisServiceBroker) Bind(instanceID, bindingID string, details brokerapi.BindDetails) (brokerapi.Binding, error) {
 	for _, repo := range redisServiceBroker.InstanceBinders {
 		instanceExists, _ := repo.InstanceExists(instanceID)
 		if instanceExists {
 			instanceCredentials, err := repo.Bind(instanceID, bindingID)
 			if err != nil {
 				return brokerapi.Binding{
-					nil,
-					"",
-					},  err
+					Credentials:    nil,
+					SyslogDrainURL: "",
+				}, err
 			}
 			credentialsMap := map[string]interface{}{
 				"host":     instanceCredentials.Host,
@@ -137,16 +136,16 @@ func (redisServiceBroker *RedisServiceBroker) Bind(instanceID, bindingID string,
 				"password": instanceCredentials.Password,
 			}
 			return brokerapi.Binding{
-					credentialsMap,
-					"",
+				Credentials:    credentialsMap,
+				SyslogDrainURL: "",
 			}, nil
 		}
 	}
 
 	return brokerapi.Binding{
-				nil,
-				"",
-			},brokerapi.ErrInstanceDoesNotExist
+		Credentials:    nil,
+		SyslogDrainURL: "",
+	}, brokerapi.ErrInstanceDoesNotExist
 }
 
 func (redisServiceBroker *RedisServiceBroker) Unbind(instanceID, bindingID string, details brokerapi.UnbindDetails) error {
@@ -164,15 +163,15 @@ func (redisServiceBroker *RedisServiceBroker) Unbind(instanceID, bindingID strin
 	return brokerapi.ErrInstanceDoesNotExist
 }
 
-func (redisServiceBroker *RedisServiceBroker) Update(instanceID string, details brokerapi.UpdateDetails, asyncAllowed bool) (brokerapi.IsAsync, error){
+func (redisServiceBroker *RedisServiceBroker) Update(instanceID string, details brokerapi.UpdateDetails, asyncAllowed bool) (brokerapi.IsAsync, error) {
 	return false, nil
 }
 
-func (redisServiceBroker *RedisServiceBroker) LastOperation(instanceID string) (brokerapi.LastOperation, error){
+func (redisServiceBroker *RedisServiceBroker) LastOperation(instanceID string) (brokerapi.LastOperation, error) {
 	return brokerapi.LastOperation{
-			brokerapi.Succeeded,
-			"done",
-		}, nil
+		State:       brokerapi.Succeeded,
+		Description: "done",
+	}, nil
 }
 
 func (redisServiceBroker *RedisServiceBroker) plans() map[string]*brokerapi.ServicePlan {

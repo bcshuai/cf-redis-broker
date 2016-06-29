@@ -8,13 +8,13 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/bcshuai/cf-redis-broker/agentconfig"
 	"github.com/bcshuai/cf-redis-broker/broker"
-	"github.com/bcshuai/cf-redis-broker/brokerconfig"
 	"github.com/bcshuai/cf-redis-broker/redisconf"
 )
 
 type LocalRepository struct {
-	RedisConf brokerconfig.ServiceConfiguration
+	RedisConf agentconfig.SharedAgentConfig
 }
 
 func (repo *LocalRepository) FindByID(instanceID string) (*Instance, error) {
@@ -111,7 +111,7 @@ func (repo *LocalRepository) lockFilePath(instance *Instance) string {
 func (repo *LocalRepository) AllInstances() ([]*Instance, error) {
 	instances := []*Instance{}
 
-	instanceDirs, err := ioutil.ReadDir(repo.RedisConf.InstanceDataDirectory)
+	instanceDirs, err := ioutil.ReadDir(repo.RedisConf.RedisConfiguration.InstanceDataDirectory)
 	if err != nil {
 		return instances, err
 	}
@@ -181,7 +181,7 @@ func (repo *LocalRepository) EnsureDirectoriesExist(instance *Instance) error {
 
 func (repo *LocalRepository) WriteConfigFile(instance *Instance) error {
 	return redisconf.CopyWithInstanceAdditions(
-		repo.RedisConf.DefaultConfigPath,
+		repo.RedisConf.RedisConfiguration.DefaultConfigPath,
 		repo.InstanceConfigPath(instance.ID),
 		instance.ID,
 		strconv.Itoa(instance.Port),
@@ -192,7 +192,7 @@ func (repo *LocalRepository) WriteConfigFile(instance *Instance) error {
 }
 
 func (repo *LocalRepository) InstanceBaseDir(instanceID string) string {
-	return path.Join(repo.RedisConf.InstanceDataDirectory, instanceID)
+	return path.Join(repo.RedisConf.RedisConfiguration.InstanceDataDirectory, instanceID)
 }
 
 func (repo *LocalRepository) InstanceDataDir(instanceID string) string {
@@ -201,7 +201,7 @@ func (repo *LocalRepository) InstanceDataDir(instanceID string) string {
 }
 
 func (repo *LocalRepository) InstanceLogDir(instanceID string) string {
-	return path.Join(repo.RedisConf.InstanceLogDirectory, instanceID)
+	return path.Join(repo.RedisConf.RedisConfiguration.InstanceLogDirectory, instanceID)
 }
 
 func (repo *LocalRepository) InstanceLogFilePath(instanceID string) string {

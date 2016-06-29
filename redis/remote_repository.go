@@ -10,8 +10,11 @@ import (
 	"github.com/bcshuai/brokerapi"
 	"github.com/bcshuai/cf-redis-broker/broker"
 	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/pivotal-golang/lager"
 )
+
 type RemoteRepository struct {
+	logger             lager.Logger
 	availableInstances []*Instance
 	allocatedInstances []*Instance
 	instanceLimit      int
@@ -22,27 +25,36 @@ type RemoteRepository struct {
 	sync.RWMutex
 }
 
-
 type AgentClient interface {
 	Reset(hostIP string) error
 	Credentials(hostIP string) (Credentials, error)
 }
 
-func NewRemoteRepository(agentClient AgentClient, config brokerconfig.Config) (*RemoteRepository, error) {
-	repo := RemoteRepository{
+func NewRemoteRepository(agentClient AgentClient, config brokerconfig.Config, logger lager.Logger) (*RemoteRepository, error) {
+	/*repo := RemoteRepository{
 		instanceLimit:    len(config.RedisConfiguration.Dedicated.Nodes),
 		instanceBindings: map[string][]string{},
 		statefilePath:    config.RedisConfiguration.Dedicated.StatefilePath,
 		agentClient:      agentClient,
 		agentPort:        config.AgentPort,
+	}*/
+	repo := RemoteRepository{
+		instanceLimit:    len(config.Dedicated.Nodes),
+		instanceBindings: map[string][]string{},
+		statefilePath:    config.Dedicated.StatefilePath,
+		agentClient:      agentClient,
+		agentPort:        config.AgentPort,
+		logger:           logger,
 	}
 
 	err := repo.loadStateFromFile()
 	if err != nil {
+		logger.Error("Loading state file failing", err)
 		return nil, err
 	}
 
-	for _, ip := range config.RedisConfiguration.Dedicated.Nodes {
+	//for _, ip := range config.RedisConfiguration.Dedicated.Nodes {
+	for _, ip := range config.Dedicated.Nodes {
 		available := true
 		for _, allocatedInstance := range repo.allocatedInstances {
 			if ip == allocatedInstance.Host {
@@ -60,6 +72,7 @@ func NewRemoteRepository(agentClient AgentClient, config brokerconfig.Config) (*
 
 	err = repo.PersistStatefile()
 	if err != nil {
+		logger.Error("Persisting state file failed", err)
 		return nil, err
 	}
 
@@ -257,6 +270,7 @@ func (repo *RemoteRepository) PersistStatefile() error {
 		return err
 	}
 
+	repo.logger.Info("Persist state file: " + repo.statefilePath)
 	return ioutil.WriteFile(repo.statefilePath, stateBytes, 0644)
 }
 

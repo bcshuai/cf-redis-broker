@@ -6,7 +6,7 @@ import (
 	"github.com/pborman/uuid"
 
 	"github.com/bcshuai/brokerapi"
-	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/agentconfig"
 )
 
 type ProcessController interface {
@@ -27,15 +27,14 @@ type LocalInstanceRepository interface {
 	Lock(instance *Instance) error
 	Unlock(instance *Instance) error
 	AllInstances() ([]*Instance, error)
-	ProvisonInstance(instance *Instance) error 
-
+	ProvisonInstance(instance *Instance) error
 }
 
 type LocalInstanceCreator struct {
 	LocalInstanceRepository
 	FindFreePort       func() (int, error)
 	ProcessController  ProcessController
-	RedisConfiguration brokerconfig.ServiceConfiguration
+	RedisConfiguration agentconfig.SharedAgentConfig
 }
 
 func (localInstanceCreator *LocalInstanceCreator) Create(instanceID string) error {
@@ -47,7 +46,7 @@ func (localInstanceCreator *LocalInstanceCreator) Create(instanceID string) erro
 	if instanceCount >= localInstanceCreator.RedisConfiguration.ServiceInstanceLimit {
 		return brokerapi.ErrInstanceLimitMet
 	}
-    
+
 	port, _ := localInstanceCreator.FindFreePort()
 	instance := &Instance{
 		ID:       instanceID,
@@ -66,15 +65,15 @@ func (localInstanceCreator *LocalInstanceCreator) CreateWithRestriction(instance
 	if instanceCount >= localInstanceCreator.RedisConfiguration.ServiceInstanceLimit {
 		return brokerapi.ErrInstanceLimitMet
 	}
-    
+
 	port, _ := localInstanceCreator.FindFreePort()
 	instance := &Instance{
-		ID:       instanceID,
-		Port:     port,
-		Host:     localInstanceCreator.RedisConfiguration.Host,
-		Password: uuid.NewRandom().String(),
+		ID:                   instanceID,
+		Port:                 port,
+		Host:                 localInstanceCreator.RedisConfiguration.Host,
+		Password:             uuid.NewRandom().String(),
 		MaxClientConnections: max_client_connection,
-		MaxMemoryInMB: max_memory_in_mb,
+		MaxMemoryInMB:        max_memory_in_mb,
 	}
 	return localInstanceCreator.ProvisonInstance(instance)
 }

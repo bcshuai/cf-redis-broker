@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/bcshuai/cf-redis-broker/brokerconfig"
+	"github.com/bcshuai/cf-redis-broker/agentconfig"
 	"github.com/bcshuai/cf-redis-broker/configmigrator"
 	"github.com/pivotal-golang/lager"
 )
@@ -17,7 +17,7 @@ func main() {
 
 	log.Info("Config File: " + brokerConfigPath)
 
-	config, err := brokerconfig.ParseConfig(brokerConfigPath)
+	config, err := agentconfig.ParseSharedAgentConfig(brokerConfigPath)
 	if err != nil {
 		log.Fatal("Loading config file", err, lager.Data{
 			"broker-config-path": brokerConfigPath,

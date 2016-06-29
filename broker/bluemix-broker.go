@@ -29,7 +29,8 @@ type BluemixRedisServiceBroker struct {
 }
 
 func (broker *BluemixRedisServiceBroker) Services() []brokerapi.IMetadataProvider {
-	config := broker.Config.RedisConfiguration
+	//config := broker.Config.RedisConfiguration
+	config := broker.Config
 	services := []brokerapi.IMetadataProvider{}
 	for _, serviceConfig := range config.Services {
 		service := brokerapi.Service{
@@ -63,7 +64,8 @@ func (broker *BluemixRedisServiceBroker) Provision(instanceID string, details br
 
 	var matchedServiceConfig *brokerconfig.BluemixServiceConfig = nil
 
-	for _, serviceConfig := range broker.Config.RedisConfiguration.Services {
+	//for _, serviceConfig := range broker.Config.RedisConfiguration.Services {
+	for _, serviceConfig := range broker.Config.Services {
 		if serviceConfig.ServiceID == details.ServiceID {
 			matchedServiceConfig = &serviceConfig
 			break
