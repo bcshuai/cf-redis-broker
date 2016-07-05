@@ -1,6 +1,7 @@
 package sharednodeagent
 
 import (
+	"github.com/cloudfoundry/gosigar"
 	"github.com/pborman/uuid"
 	"github.com/pivotal-golang/lager"
 
@@ -25,14 +26,37 @@ func (client *SharedNodeAgent) Resources() (sharednode.Resource, error) {
 	if err != nil {
 		return sharednode.Resource{}, err
 	}
+	var free int = 0
+	if limitation == 0 {
+		free = 0
+	} else {
+		free = limitation - used
+	}
 	instanceStatus := sharednode.ResourceStatus{
 		All:  limitation,
 		Used: used,
-		Free: limitation - used,
+		Free: free,
 	}
 
+	var instanceReservedMem uint64 = 0
+	instances, err := client.InstanceRepo.AllInstances()
+	if err != nil {
+		return sharednode.Resource{}, err
+	}
+	for _, instance := range instances {
+		instanceReservedMem += uint64(instance.MaxMemoryInMB)
+	}
+	mem := sigar.Mem{}
+	totalMemory := mem.Total / (1024 * 1024)                 //total size in MB
+	usedMemory := instanceReservedMem + mem.Used/(1024*1024) //used size in MB
+	memoryStatus := sharednode.ResourceStatus{
+		All:  int(totalMemory),
+		Used: int(usedMemory),
+		Free: int(totalMemory - usedMemory),
+	}
 	return sharednode.Resource{
 		InstanceStatus: instanceStatus,
+		MemoryStatus:   memoryStatus,
 	}, nil
 }
 

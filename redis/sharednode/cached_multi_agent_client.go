@@ -103,6 +103,11 @@ func (client *CachedMultiSharedNodeAgentClient) Resources() (api.Resource, error
 			Free: 0,
 			Used: 0,
 		},
+		MemoryStatus: api.ResourceStatus{
+			All:  0,
+			Free: 0,
+			Used: 0,
+		},
 	}
 	for _, node := range client.clients {
 		host := node.Host
@@ -124,6 +129,10 @@ func (client *CachedMultiSharedNodeAgentClient) Resources() (api.Resource, error
 		allResource.InstanceStatus.All += res.InstanceStatus.All
 		allResource.InstanceStatus.Free += res.InstanceStatus.Free
 		allResource.InstanceStatus.Used += res.InstanceStatus.Used
+
+		allResource.MemoryStatus.All += res.MemoryStatus.All
+		allResource.MemoryStatus.Free += res.MemoryStatus.Free
+		allResource.MemoryStatus.Used += res.MemoryStatus.Used
 	}
 	return allResource, nil
 }
@@ -229,7 +238,13 @@ func (client *CachedMultiSharedNodeAgentClient) ProvisionInstance(instance redis
 		if !ok {
 			continue
 		}
-		usage := float32(res.InstanceStatus.Free) / float32(res.InstanceStatus.All)
+		if res.InstanceStatus.All != 0 && res.InstanceStatus.Free == 0 {
+			continue
+		}
+		if res.MemoryStatus.Free < instance.MaxMemoryInMB {
+			continue
+		}
+		usage := float32(res.MemoryStatus.Free) / float32(res.MemoryStatus.All)
 		client.logger.Info("Node.Resource", lager.Data{
 			host:   res,
 			"free": usage,

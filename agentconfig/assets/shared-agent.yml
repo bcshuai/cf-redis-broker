@@ -1,0 +1,17 @@
+---
+backend_host: localhost
+backend_port: 8888
+auth:
+  username: admin
+  password: admin
+
+process_check_interval: 10
+start_redis_timeout: 30
+service_instance_limit: 5
+monit_executable_path: /usr/bin/true
+redis_server_executable_path: /usr/bin/true
+
+redis:
+  data_directory: /usr/bin/true
+  redis_conf_path: /usr/bin/true
+  log_directory: /usr/bin/true

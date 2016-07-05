@@ -18,7 +18,7 @@ type ResourceStatus struct {
 }
 
 type Resource struct {
-	//MemoryStatus 	ResourceStatus 		`json:"memory"`
+	MemoryStatus ResourceStatus `json:"memory"`
 	//DiskStatus   	ResourceStatus 		`json:"disk"`
 	InstanceStatus ResourceStatus `json:"instances"`
 	//CPUS			int 				`json:"cpus"`
