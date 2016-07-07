@@ -251,15 +251,20 @@ func (client *MultiSharedNodeAgentClient) ProvisionInstance(instance redis.Insta
 	targetHost := ""
 	var minUsageRate float32 = -1.0
 	for host, res := range nodeResourceMap {
-		if res.InstanceStatus.All == 0 {
+
+		if res.InstanceStatus.All != 0 && res.InstanceStatus.Free == 0 {
 			continue
 		}
+		if res.MemoryStatus.Free < instance.MaxMemoryInMB {
+			continue
+		}
+		usage := float32(res.MemoryStatus.Free) / float32(res.MemoryStatus.All)
 
-		usage := float32(res.InstanceStatus.Free) / float32(res.InstanceStatus.All)
 		client.Logger.Info("Node.Resource", lager.Data{
 			host:   res,
 			"free": usage,
 		})
+
 		if usage > minUsageRate {
 			minUsageRate = usage
 			client.Logger.Info("Node.Resource", lager.Data{
