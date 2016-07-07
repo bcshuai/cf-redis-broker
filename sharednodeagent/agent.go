@@ -47,8 +47,9 @@ func (client *SharedNodeAgent) Resources() (sharednode.Resource, error) {
 		instanceReservedMem += uint64(instance.MaxMemoryInMB)
 	}
 	mem := sigar.Mem{}
-	totalMemory := mem.Total / (1024)                   //total size in MB
-	usedMemory := instanceReservedMem + mem.Used/(1024) //used size in MB
+	mem.Get()
+	totalMemory := mem.Total / (1024 * 1024)                 //total size in MB
+	usedMemory := instanceReservedMem + mem.Used/(1024*1024) //used size in MB
 	memoryStatus := sharednode.ResourceStatus{
 		All:  int(totalMemory),
 		Used: int(usedMemory),
