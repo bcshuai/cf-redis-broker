@@ -76,10 +76,10 @@ func (updater *instancesCacheUpdater) Value(key string) interface{} {
 
 func NewCachedMultiSharedNodeAgentClient(clients []*SharedNodeAgentClient, logger lager.Logger) *CachedMultiSharedNodeAgentClient {
 
-	resourceCache := cache.NewCache(true, 50, &resourceCacheUpdater{
+	resourceCache := cache.NewCache(true, 100, &resourceCacheUpdater{
 		Clients: clients,
 	})
-	instancesCache := cache.NewCache(true, 50, &instancesCacheUpdater{
+	instancesCache := cache.NewCache(true, 100, &instancesCacheUpdater{
 		Clients: clients,
 	})
 

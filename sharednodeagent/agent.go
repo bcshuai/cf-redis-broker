@@ -107,7 +107,7 @@ func (client *SharedNodeAgent) ProvisionInstance(instance redis.Instance) error 
 		return err
 	}
 
-	if instanceCount >= client.Config.ServiceInstanceLimit {
+	if client.Config.ServiceInstanceLimit != 0 && instanceCount >= client.Config.ServiceInstanceLimit {
 		return brokerapi.ErrInstanceLimitMet
 	}
 
